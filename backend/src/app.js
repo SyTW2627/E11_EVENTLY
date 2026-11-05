@@ -16,4 +16,10 @@ app.get('/api/ping', (req, res) => {
   });
 });
 
+// Importar las rutas de eventos
+const eventsRoutes = require('./routes/events.routes');
+
+// Usar las rutas importadas
+app.use('/api/events', eventsRoutes);
+
 module.exports = app;
