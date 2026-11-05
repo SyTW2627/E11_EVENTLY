@@ -40,7 +40,7 @@ Fuente: **Manrope** (pesos 400, 500, 600, 700 y 800), con `system-ui, sans-serif
 | Fondo de página | `--color-fondo-pagina` | `#F4F6F2` |
 | Superficie / tarjeta | `--color-superficie` | `#FFFFFF` |
 | Borde de tarjeta | `--color-borde-tarjeta` | `#DDE3DB` |
-| Borde de inputs y botones secundarios | `--color-borde-control` | `#C5CFC7` |
+| Borde de inputs, selects y botones secundarios | `--color-borde-control` | `#7D8B81` |
 | Pista de la barra de ocupación | `--color-pista-ocupacion` | `#E4E9E3` |
 | Texto principal | `--color-texto` | `#14201A` |
 | Texto fuerte-secundario | `--color-texto-fuerte-secundario` | `#26332B` |
@@ -368,12 +368,13 @@ Este criterio se aplica a los bordes que identifican un control y a las partes g
 | Borde de botón de baja | `#B42323` / `#FFFFFF` | 6.55 | Sí |
 | Contorno de foco | `#0B5D3B` / `#FFFFFF` | 7.95 | Sí |
 | Contorno de foco | `#0B5D3B` / `#F4F6F2` | 7.31 | Sí |
-| **Borde de inputs y botones secundarios** | `#C5CFC7` / `#FFFFFF` | **1.60** | **No (pendiente de revisar)** |
+| Borde de inputs, selects y botones secundarios | `#7D8B81` / `#FFFFFF` | 3.57 | Sí |
+| Borde de inputs, selects y botones secundarios | `#7D8B81` / `#F4F6F2` | 3.28 | Sí |
 | Borde de tarjeta | `#DDE3DB` / `#FFFFFF` | 1.31 | No (decorativo) |
 | Borde de tarjeta | `#DDE3DB` / `#F4F6F2` | 1.20 | No (decorativo) |
 | Pista de la barra | `#E4E9E3` / `#FFFFFF` | 1.23 | No (decorativo) |
 
 Notas:
 
-- **Borde de inputs y botones secundarios (`#C5CFC7`)**: no llega a 3:1. Se mantiene el valor de los mockups hasta que el equipo decida si se oscurece. Mientras tanto, los controles se identifican por su etiqueta visible y su texto.
+- **Borde de inputs, selects y botones secundarios (corregido)**: el valor original de los mockups, `#C5CFC7`, solo daba 1.60:1 sobre blanco y no cumplía el mínimo de 3:1 que exige WCAG 1.4.11 para los bordes que identifican un control. Se sustituyó por `#7D8B81`, que cumple tanto sobre la superficie como sobre el fondo de página.
 - El borde de tarjeta y la pista de la barra son decorativos: la tarjeta se reconoce por su contenido y la ocupación se lee en el texto de la insignia y en el relleno de la barra, que sí cumplen.

@@ -36,7 +36,7 @@
 
   /* ---------- Bordes ---------- */
   --color-borde-tarjeta: #dde3db;
-  --color-borde-control: #c5cfc7;    /* inputs y botones secundarios */
+  --color-borde-control: #7d8b81;    /* inputs, selects y botones secundarios (contraste 3:1, WCAG 1.4.11) */
   --color-pista-ocupacion: #e4e9e3;  /* pista de la barra de ocupación */
 
   /* ---------- Texto ---------- */
