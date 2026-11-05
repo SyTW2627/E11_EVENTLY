@@ -1,0 +1,78 @@
+/*
+ * Tokens de diseño de Evently (SCRUM-31).
+ * Valores tomados de los mockups aprobados. La documentación de uso está en docs/guia-de-estilos.md.
+ * No se deben usar colores, radios ni espaciados sueltos en los componentes: siempre estas variables.
+ */
+
+:root {
+  /* ---------- Tipografía ---------- */
+  --fuente-base: 'Manrope', system-ui, sans-serif;
+
+  --peso-regular: 400;
+  --peso-medio: 500;
+  --peso-seminegrita: 600;
+  --peso-negrita: 700;
+  --peso-extranegrita: 800;
+
+  --texto-titulo-pagina: 36px;   /* peso 800 */
+  --texto-titulo-seccion: 20px;  /* peso 800 */
+  --texto-titulo-tarjeta: 19px;  /* peso 800 */
+  --texto-cuerpo: 16px;          /* peso 400-500 */
+  --texto-secundario: 14px;
+  --texto-etiqueta: 13px;        /* peso 700 */
+
+  /* ---------- Color de marca ---------- */
+  --color-marca: #0b5d3b;
+  --color-marca-hover: #08432a;
+
+  /* Fondos suaves de marca */
+  --color-marca-suave-1: #e7efe9;
+  --color-marca-suave-2: #ddebe2;
+  --color-marca-suave-3: #dff2e6;
+
+  /* ---------- Fondos ---------- */
+  --color-fondo-pagina: #f4f6f2;
+  --color-superficie: #ffffff;
+
+  /* ---------- Bordes ---------- */
+  --color-borde-tarjeta: #dde3db;
+  --color-borde-control: #c5cfc7;    /* inputs y botones secundarios */
+  --color-pista-ocupacion: #e4e9e3;  /* pista de la barra de ocupación */
+
+  /* ---------- Texto ---------- */
+  --color-texto: #14201a;
+  --color-texto-fuerte-secundario: #26332b;
+  --color-texto-secundario: #3f4b44;
+  --color-texto-atenuado: #4a564f;
+  --color-texto-sobre-marca: #ffffff;
+
+  /* ---------- Estados de ocupación ---------- */
+  --color-libre-barra: #1e8a4f;
+  --color-libre-texto: #0b5d3b;
+  --color-libre-fondo: #dff2e6;
+
+  --color-completo-barra: #b42323;
+  --color-completo-texto: #9e1b1b;
+  --color-completo-fondo: #fbe5e5;
+
+  /* ---------- Radios ---------- */
+  --radio-control: 12px;   /* botones e inputs */
+  --radio-tarjeta: 16px;
+  --radio-insignia: 14px;
+  --radio-chip: 22px;      /* chips de filtro */
+
+  /* ---------- Espaciado (base 4px) ---------- */
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px;
+  --espacio-5: 20px;
+  --espacio-6: 24px;
+  --espacio-7: 28px;
+  --espacio-8: 48px;
+
+  /* ---------- Accesibilidad ---------- */
+  --altura-min-interactivo: 44px;
+  --foco-contorno: 3px solid var(--color-marca);
+  --foco-separacion: 2px;
+}
