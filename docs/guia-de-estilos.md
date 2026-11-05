@@ -10,6 +10,8 @@ Esta guía recoge los valores de diseño de los mockups aprobados y cómo aplica
 
 Fuente: **Manrope** (pesos 400, 500, 600, 700 y 800), con `system-ui, sans-serif` de reserva.
 
+La fuente se carga desde Google Fonts en `frontend/src/index.html` (con `preconnect` y `display=swap`).
+
 | Uso | Variable de tamaño | Tamaño | Peso |
 | --- | --- | --- | --- |
 | Título de página | `--texto-titulo-pagina` | 36px | 800 |
