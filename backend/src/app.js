@@ -22,4 +22,10 @@ const eventsRoutes = require('./routes/events.routes');
 // Usar las rutas importadas
 app.use('/api/events', eventsRoutes);
 
+// Importar las rutas
+const eventsRoutes = require('./routes/events.routes');
+
+// Usar las rutas importadas (Todo lo que vaya a /api/events lo gestionará events.routes.js)
+app.use('/api/events', eventsRoutes);
+
 module.exports = app;
