@@ -2,3 +2,8 @@
 
 /* Tokens de diseño (SCRUM-31): colores, tipografía, radios y espaciado */
 @use 'styles/tokens';
+
+/* Tipografía base de toda la aplicación: Manrope con system-ui y sans-serif de reserva */
+body {
+  font-family: var(--fuente-base);
+}
