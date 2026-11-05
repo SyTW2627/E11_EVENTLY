@@ -6,4 +6,12 @@ const app = express();
 // Parseo del cuerpo de las peticiones en formato JSON
 app.use(express.json());
 
+// Endpoint de comprobación (Health check)
+app.get('/api/ping', (req, res) => {
+  res.status(200).json({ 
+    status: 'success', 
+    message: 'API del servidor funcionando correctamente' 
+  });
+});
+
 module.exports = app;
