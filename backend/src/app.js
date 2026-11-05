@@ -24,7 +24,7 @@ const authRoutes = require('./routes/auth.routes');
 app.use('/api/events', eventsRoutes);
 app.use('/api/auth', authRoutes);
 
-// Importar las rutas
+// Importar las rutass
 const eventsRoutes = require('./routes/events.routes');
 
 // Usar las rutas importadas (Todo lo que vaya a /api/events lo gestionará events.routes.js)
