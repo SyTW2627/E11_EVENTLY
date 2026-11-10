@@ -1,4 +1,7 @@
 /* Estilos globales de la aplicación */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Tokens de diseño (SCRUM-31): colores, tipografía, radios y espaciado */
 @use 'styles/tokens';
