@@ -6,16 +6,37 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  // Cambia el puerto si tu backend corre en uno distinto
   private apiUrl = 'http://localhost:3000/api/auth'; 
+  
+  // Clave bajo la que se guardará el token en el navegador
+  private tokenKey = 'auth_token';
 
   constructor(private http: HttpClient) { }
 
+  // PETICIONES AL BACKEND
+
   registrarUsuario(datosUsuario: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, datosUsuario);
+    return this.http.post(`${this.apiUrl}/register`, datosUsuario); 
+  }  
+    
+    iniciarSesion(credenciales: any): Observable<any> { 
+      return this.http.post(`${this.apiUrl}/login`, credenciales); 
+    }
+
+  // GESTIÓN DEL TOKEN
+
+  // Guardar el token
+  setToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
   }
 
-  iniciarSesion(credenciales: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credenciales);
+  // Leer el token
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  // Borrar el token
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
   }
 }
