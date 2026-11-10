@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth/auth'; // <-- Ruta corregida
 
 @Component({
   selector: 'app-register',
@@ -12,7 +13,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 export class RegisterComponent {
   registerForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registerForm = this.fb.group({
       nombre: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -22,7 +23,16 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      console.log('Datos válidos listos para el backend:', this.registerForm.value);
+      this.authService.registrarUsuario(this.registerForm.value).subscribe({
+        next: (respuesta: any) => { // <-- Añadido : any
+          console.log('Usuario registrado con éxito', respuesta);
+          alert('¡Registro exitoso!');
+        },
+        error: (error: any) => { // <-- Añadido : any
+          console.error('Error en el registro', error);
+          alert('Hubo un error al registrarse.');
+        }
+      });
     } else {
       this.registerForm.markAllAsTouched();
     }
