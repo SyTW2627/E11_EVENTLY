@@ -1,31 +1,68 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-// Ruta temporal de prueba para comprobar que el enrutador funciona
-router.get('/', (req, res) => {
-    res.status(200).json({ message: 'Enrutador de eventos configurado correctamente' });
+// 1. Middleware de Autenticación: El guardián de las rutas
+const verificarToken = (req, res, next) => {
+    // Buscamos el token en la cabecera de la petición
+    const token = req.header('Authorization');
+    
+    if (!token) {
+        return res.status(401).json({ message: 'Acceso denegado. Se requiere token de autenticación.' });
+    }
+
+    try {
+        // Limpiamos el token por si el frontend lo envía como "Bearer <token>"
+        const tokenLimpio = token.replace('Bearer ', '');
+        const secret = process.env.JWT_SECRET || 'secreto_temporal_evently_2026';
+        
+        // Verificamos si la firma es válida y no ha caducado
+        const payload = jwt.verify(tokenLimpio, secret);
+        
+        // Guardamos los datos del usuario en la request y dejamos pasar a la ruta
+        req.usuario = payload.usuario;
+        next();
+    } catch (error) {
+        res.status(400).json({ message: 'Token inválido o expirado.' });
+    }
+};
+
+// 2. Endpoints protegidos (Usamos 'verificarToken' como filtro intermedio)
+
+// GET: Obtener todos los eventos
+router.get('/', verificarToken, async (req, res) => {
+    // Aquí se conectará con el esquema de Mongoose (SCRUM-48) para hacer el Event.find()
+    res.status(200).json({ message: 'Lista de eventos obtenida con éxito (Ruta protegida)' });
 });
 
-// GET: Obtener un evento específico por su ID
-router.get('/:id', (req, res) => {
-    res.status(200).json({ message: `Detalles del evento con ID: ${req.params.id}` });
+// GET: Obtener un evento por ID
+router.get('/:id', verificarToken, async (req, res) => {
+    res.status(200).json({ message: `Detalles del evento ${req.params.id}` });
 });
 
 // POST: Crear un nuevo evento
-router.post('/', (req, res) => {
-    // 201 es el código HTTP correcto para "Creado"
-    res.status(201).json({ message: 'Nuevo evento creado exitosamente' });
+router.post('/', verificarToken, async (req, res) => {
+    const { titulo, descripcion, fecha, ubicacion } = req.body;
+    
+    if (!titulo || !fecha) {
+        return res.status(400).json({ message: 'El título y la fecha son obligatorios' });
+    }
+
+    res.status(201).json({ 
+        message: 'Evento creado exitosamente', 
+        creador: req.usuario.email, // Sabemos quién lo crea gracias al token
+        evento: { titulo, descripcion, fecha, ubicacion }
+    });
 });
 
-// PUT: Actualizar un evento existente por completo
-router.put('/:id', (req, res) => {
-    res.status(200).json({ message: `Evento con ID: ${req.params.id} actualizado` });
+// PUT: Actualizar un evento
+router.put('/:id', verificarToken, async (req, res) => {
+    res.status(200).json({ message: `Evento ${req.params.id} actualizado correctamente` });
 });
 
 // DELETE: Eliminar un evento
-router.delete('/:id', (req, res) => {
-    res.status(200).json({ message: `Evento con ID: ${req.params.id} eliminado` });
+router.delete('/:id', verificarToken, async (req, res) => {
+    res.status(200).json({ message: `Evento ${req.params.id} eliminado` });
 });
-
 
 module.exports = router;
