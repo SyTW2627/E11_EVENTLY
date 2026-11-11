@@ -1,0 +1,60 @@
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+    
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-extrabold text-gray-900">Crear Partido</h2>
+      <p class="mt-2 text-sm text-gray-600">Organiza tu próximo evento deportivo</p>
+    </div>
+
+    <form [formGroup]="publishForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <!-- Título -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Título del evento</label>
+        <input type="text" formControlName="titulo" placeholder="Ej. Fútbol 7 en La Laguna" 
+               class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+      </div>
+
+      <!-- Deporte -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Deporte</label>
+        <select formControlName="deporte" 
+                class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+          <option value="">Selecciona un deporte...</option>
+          <option value="futbol">Fútbol</option>
+          <option value="baloncesto">Baloncesto</option>
+          <option value="padel">Pádel</option>
+          <option value="voley">Vóley Playa</option>
+        </select>
+      </div>
+
+      <!-- Fecha y Participantes (en dos columnas) -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Fecha</label>
+          <input type="date" formControlName="fecha" 
+                 class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Participantes</label>
+          <input type="number" formControlName="maxParticipantes" 
+                 class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+        </div>
+      </div>
+
+      <!-- Ubicación -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Ubicación</label>
+        <input type="text" formControlName="ubicacion" placeholder="Campus de Guajara" 
+               class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+      </div>
+
+      <!-- Botón de Submit -->
+      <button type="submit" 
+              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all cursor-pointer">
+        Publicar Evento
+      </button>
+
+    </form>
+  </div>
+</div>

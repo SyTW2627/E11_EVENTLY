@@ -5,6 +5,7 @@ import { ProfileComponent } from './features/user/profile/profile';
 import { OnboardingComponent } from './features/auth/onboarding/onboarding';
 import { UserProvisioningComponent } from './features/admin/user-provisioning/user-provisioning';
 import { authGuard } from './core/guards/auth-guard';
+import { EventPublishComponent } from './features/events/event-publish/event-publish';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: 'perfil', component: ProfileComponent, canActivate: [authGuard] },
       { path: 'onboarding', component: OnboardingComponent, canActivate: [authGuard] },
       { path: 'usuarios', component: UserProvisioningComponent, canActivate: [authGuard] },
+      { path: 'publicar', component: EventPublishComponent, canActivate: [authGuard] },
     ]
   }
 ];

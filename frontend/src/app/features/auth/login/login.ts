@@ -31,7 +31,7 @@ export class LoginComponent {
           // y redirigiremos al usuario a la pantalla principal:
           // this.router.navigate(['/']); 
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Error en la autenticación', err);
           alert('Error al iniciar sesión. Comprueba tus datos o el estado del servidor.');
         }
