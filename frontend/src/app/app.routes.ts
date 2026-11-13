@@ -6,6 +6,7 @@ import { OnboardingComponent } from './features/auth/onboarding/onboarding';
 import { UserProvisioningComponent } from './features/admin/user-provisioning/user-provisioning';
 import { authGuard } from './core/guards/auth-guard';
 import { EventPublishComponent } from './features/events/event-publish/event-publish';
+import { RegistroComponent } from './registro/registro';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,7 @@ export const routes: Routes = [
 
       // Ruta pública, cualquiera puede entrar
       { path: 'login', component: LoginComponent }, // Ruta login
+      { path: 'registro', component: RegistroComponent },
 
       // Rutas privadas, solo entran si tienen token
       { path: 'perfil', component: ProfileComponent, canActivate: [authGuard] },

@@ -6,8 +6,43 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    /* Paleta extraída de vuestros mockups */
+    --color-primary: #0a5c36; /* El verde oscuro principal */
+    --color-primary-hover: #08492b;
+    --color-bg-app: #f8f9fa; /* Gris muy claro para que las tarjetas blancas destaquen */
+    --text-main: #212529; /* Gris oscuro, nunca negro puro */
+    --text-muted: #6c757d;
+  }
 
-/* Tipografía base de toda la aplicación: Manrope con system-ui y sans-serif de reserva */
-body {
-  font-family: var(--fuente-base);
+  /* Tipografía base, color de texto y fondo de toda la aplicación */
+  body {
+    font-family: var(--fuente-base, 'Manrope', system-ui, sans-serif);
+    @apply antialiased; /* Suaviza la fuente para que se vea moderna */
+    background-color: var(--color-bg-app);
+    color: var(--text-main);
+  }
+}
+
+@layer components {
+  /* TARJETA GLOBAL: La base blanca con bordes redondeados y sombra suave de los mockups */
+  .card {
+    @apply bg-white rounded-[16px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-gray-100;
+  }
+
+  /* BOTÓN PRINCIPAL: El botón verde redondeado */
+  .btn-primary {
+    @apply flex justify-center items-center bg-[#0a5c36] text-white px-5 py-2.5 rounded-[12px] font-semibold transition-colors duration-200 hover:bg-[#08492b];
+  }
+  
+  /* ETIQUETA (Badge): Para las pastillas de "Plazas libres" o niveles */
+  .badge {
+    @apply px-3 py-1 rounded-[50px] text-sm font-medium;
+  }
+  
+  /* INPUTS DE FORMULARIO: Estilo limpio y moderno */
+  .input-base {
+    @apply w-full bg-white border border-gray-200 rounded-[12px] px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0a5c36] focus:border-transparent transition-all;
+  }
 }

@@ -1,40 +1,48 @@
-<div style="max-width: 800px; margin: 3rem auto; padding: 2rem; text-align: center; font-family: sans-serif;">
+<div class="flex flex-col items-center justify-center min-h-[85vh] p-4 text-center">
   
-  <h1 style="color: #198754; margin-bottom: 0.5rem;">¡Bienvenido a Evently!</h1>
-  <p style="color: #666; font-size: 1.1rem; margin-bottom: 3rem;">
-    Estás a un paso de encontrar tu próximo partido. ¿Cómo funciona esto?
+  <!-- Encabezado con más impacto -->
+  <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+    ¡Bienvenido a <span class="text-[#0a5c36]">Evently</span>!
+  </h1>
+  <p class="text-lg md:text-xl text-gray-500 mb-14 max-w-2xl">
+    Estás a un paso de encontrar tu próximo partido. <span class="font-semibold text-gray-700">¿Cómo funciona esto?</span>
   </p>
 
-  <div style="display: flex; gap: 2rem; justify-content: center; margin-bottom: 3rem; text-align: left;">
+  <!-- Tarjetas de Pasos (Usamos Grid y ampliamos el ancho máximo) -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full px-4 mb-16">
     
     <!-- Paso 1 -->
-    <div style="flex: 1; padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa;">
-      <h3 style="color: #333; margin-top: 0;">1. Configura tu perfil</h3>
-      <p style="color: #555; font-size: 0.95rem; line-height: 1.5;">
+    <div class="card flex flex-col items-center md:items-start text-center md:text-left hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border-t-4 border-t-[#0a5c36] sm:p-8">
+      <div class="w-12 h-12 rounded-full bg-green-50 text-[#0a5c36] flex items-center justify-center font-bold text-xl mb-6 shadow-sm">1</div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Configura tu perfil</h3>
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed">
         Dinos a qué juegas y cuál es tu nivel para encontrar eventos que se ajusten a ti.
       </p>
     </div>
 
     <!-- Paso 2 -->
-    <div style="flex: 1; padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa;">
-      <h3 style="color: #333; margin-top: 0;">2. Explora el tablón</h3>
-      <p style="color: #555; font-size: 0.95rem; line-height: 1.5;">
+    <div class="card flex flex-col items-center md:items-start text-center md:text-left hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border-t-4 border-t-[#0a5c36] sm:p-8">
+      <div class="w-12 h-12 rounded-full bg-green-50 text-[#0a5c36] flex items-center justify-center font-bold text-xl mb-6 shadow-sm">2</div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Explora el tablón</h3>
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed">
         Busca partidos cerca de tu zona, revisa las plazas libres y apúntate en un clic.
       </p>
     </div>
 
     <!-- Paso 3 -->
-    <div style="flex: 1; padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa;">
-      <h3 style="color: #333; margin-top: 0;">3. Coordina y juega</h3>
-      <p style="color: #555; font-size: 0.95rem; line-height: 1.5;">
+    <div class="card flex flex-col items-center md:items-start text-center md:text-left hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border-t-4 border-t-[#0a5c36] sm:p-8">
+      <div class="w-12 h-12 rounded-full bg-green-50 text-[#0a5c36] flex items-center justify-center font-bold text-xl mb-6 shadow-sm">3</div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Coordina y juega</h3>
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed">
         Usa el chat interno de cada evento para decidir quién lleva el balón o cómo se paga la pista.
       </p>
     </div>
 
   </div>
 
-  <button (click)="comenzar()" style="padding: 14px 32px; background-color: #198754; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: background-color 0.2s;">
+  <!-- Botón de acción -->
+  <button (click)="comenzar()" class="btn-primary text-lg px-10 py-4 shadow-lg shadow-green-900/20 hover:scale-105 transform transition-all">
     Configurar mi perfil
   </button>
-
+  
 </div>

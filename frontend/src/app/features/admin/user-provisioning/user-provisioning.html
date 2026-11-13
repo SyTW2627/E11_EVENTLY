@@ -1,44 +1,106 @@
-<div style="max-width: 1000px; margin: 2rem auto; padding: 2rem; font-family: sans-serif;">
-  <h2 style="margin-bottom: 1.5rem; color: #333;">Gestión de Usuarios</h2>
-
-  <div style="overflow-x: auto; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <table style="width: 100%; border-collapse: collapse; text-align: left; background-color: #fff;">
-      <thead style="background-color: #198754; color: white;">
-        <tr>
-          <th style="padding: 12px 16px;">ID</th>
-          <th style="padding: 12px 16px;">Nombre</th>
-          <th style="padding: 12px 16px;">Email</th>
-          <th style="padding: 12px 16px;">Rol</th>
-          <th style="padding: 12px 16px;">Estado</th>
-          <th style="padding: 12px 16px;">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (user of usuarios; track user.id) {
-          <tr style="border-bottom: 1px solid #eee;">
-            <td style="padding: 12px 16px; color: #666;">#{{ user.id }}</td>
-            <td style="padding: 12px 16px; font-weight: bold;">{{ user.nombre }}</td>
-            <td style="padding: 12px 16px;">{{ user.email }}</td>
-            <td style="padding: 12px 16px;">{{ user.rol }}</td>
-            <td style="padding: 12px 16px;">
-              <span [style.color]="user.estado === 'Activo' ? '#198754' : '#fd7e14'" style="font-weight: bold;">
-                {{ user.estado }}
-              </span>
-            </td>
-            <td style="padding: 12px 16px;">
-              <button (click)="gestionarUsuario(user.nombre)" style="padding: 6px 12px; background-color: #0d6efd; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                Gestionar
-              </button>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="6" style="padding: 2rem; text-align: center; color: #888;">
-              No hay usuarios registrados.
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+<div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 min-h-[85vh]">
+  
+  <!-- Encabezado de la vista -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">Gestión de Usuarios</h2>
+      <p class="text-sm text-gray-500 mt-1">Aprovisionamiento y control de cuentas de la plataforma.</p>
+    </div>
+    
+    <!-- Botón simulado para añadir usuario manualmente -->
+    <button class="btn-primary text-sm px-5 py-2 shadow-sm">
+      + Nuevo Usuario
+    </button>
   </div>
+
+  <!-- Contenedor de la tabla -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        
+        <!-- Cabecera de la tabla -->
+        <thead class="bg-gray-50 border-b border-gray-100">
+          <tr>
+            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nombre</th>
+            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Rol</th>
+            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+          </tr>
+        </thead>
+        
+        <!-- Cuerpo de la tabla -->
+        <tbody class="divide-y divide-gray-100">
+          @for (user of usuarios; track user.id) {
+            <tr class="hover:bg-gray-50 transition-colors duration-150">
+              
+              <!-- ID -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="text-sm font-medium text-gray-400">#{{ user.id }}</span>
+              </td>
+              
+              <!-- Nombre y Avatar combinados -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-green-50 text-[#0a5c36] flex items-center justify-center font-bold text-xs uppercase">
+                    {{ user.nombre.charAt(0) }}
+                  </div>
+                  <span class="text-sm font-semibold text-gray-900">{{ user.nombre }}</span>
+                </div>
+              </td>
+              
+              <!-- Email -->
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                {{ user.email }}
+              </td>
+              
+              <!-- Rol (Badges) -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span 
+                  class="px-2.5 py-1 text-xs font-medium rounded-md"
+                  [class]="user.rol === 'Administrador' ? 'bg-purple-50 text-purple-700' : 'bg-gray-100 text-gray-600'"
+                >
+                  {{ user.rol }}
+                </span>
+              </td>
+              
+              <!-- Estado (Píldoras semánticas) -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span 
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
+                  [class]="user.estado === 'Activo' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-orange-50 text-orange-700 border-orange-200'"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full" [class]="user.estado === 'Activo' ? 'bg-green-500' : 'bg-orange-500'"></span>
+                  {{ user.estado }}
+                </span>
+              </td>
+              
+              <!-- Acciones -->
+              <td class="px-6 py-4 whitespace-nowrap text-right">
+                <button 
+                  (click)="gestionarUsuario(user.nombre)" 
+                  class="text-sm font-medium text-[#0a5c36] hover:text-[#08492b] bg-white border border-gray-200 hover:bg-gray-50 px-3 py-1.5 rounded-md transition-colors shadow-sm"
+                >
+                  Gestionar
+                </button>
+              </td>
+            </tr>
+            
+          } @empty {
+            <!-- Estado vacío (Empty State) -->
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center justify-center text-gray-500">
+                  <div class="w-12 h-12 mb-3 rounded-full bg-gray-100 flex items-center justify-center text-xl">👥</div>
+                  <p class="text-sm font-medium">No hay usuarios registrados en el sistema.</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
 </div>
