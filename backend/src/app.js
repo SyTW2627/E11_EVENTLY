@@ -24,4 +24,8 @@ const authRoutes = require('./routes/auth.routes');
 app.use('/api/events', eventsRoutes);
 app.use('/api/auth', authRoutes);
 
+// Gestor de errores común: siempre después de las rutas
+const gestorErrores = require('./middlewares/gestorErrores');
+app.use(gestorErrores);
+
 module.exports = app;
