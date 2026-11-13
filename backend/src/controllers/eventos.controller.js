@@ -14,7 +14,14 @@ async function detalle(req, res) {
   res.status(200).json({ evento });
 }
 
+// PUT /api/events/:id
+async function editar(req, res) {
+  const evento = await eventosService.editarEvento(req.params.id, req.body, req.usuario);
+  res.status(200).json({ mensaje: 'Evento actualizado correctamente', evento });
+}
+
 module.exports = {
   crear,
   detalle,
+  editar,
 };

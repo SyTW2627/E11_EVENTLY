@@ -33,7 +33,13 @@ function filtrarCampos(cuerpo) {
   for (const campo of CAMPOS_EDITABLES) {
     if (!Object.hasOwn(cuerpo, campo)) continue;
 
-    if (campo === 'ubicacion' && esObjetoPlano(cuerpo.ubicacion)) {
+    if (campo === 'ubicacion') {
+      // Mongoose ignoraría en silencio una ubicación que no sea objeto al editar
+      if (!esObjetoPlano(cuerpo.ubicacion)) {
+        throw new ErrorApi(400, 'Los datos enviados no son válidos', {
+          ubicacion: 'La ubicación debe ser un objeto con instalacion y zona',
+        });
+      }
       const ubicacion = {};
       for (const subcampo of CAMPOS_UBICACION) {
         if (Object.hasOwn(cuerpo.ubicacion, subcampo)) ubicacion[subcampo] = cuerpo.ubicacion[subcampo];
@@ -116,7 +122,53 @@ async function obtenerDetalle(id, datosToken) {
   return formatearEvento(evento, usuario._id);
 }
 
+// Solo el organizador puede modificar o cancelar su evento.
+function comprobarOrganizador(evento, usuario) {
+  if (!esMismoUsuario(evento.organizador, usuario._id)) {
+    throw new ErrorApi(403, 'Solo el organizador puede modificar este evento');
+  }
+}
+
+// SCRUM-49: edición parcial de un evento por su organizador.
+async function editarEvento(id, cuerpo, datosToken) {
+  const usuario = await obtenerUsuarioAutenticado(datosToken);
+  const evento = await buscarEvento(id);
+  comprobarOrganizador(evento, usuario);
+
+  if (evento.estado === 'cancelado') {
+    throw new ErrorApi(409, 'No se puede editar un evento cancelado');
+  }
+  if (evento.fechaFin.getTime() <= Date.now()) {
+    throw new ErrorApi(409, 'No se puede editar un evento que ya ha terminado');
+  }
+
+  const datos = filtrarCampos(cuerpo);
+  if (Object.keys(datos).length === 0) {
+    throw new ErrorApi(400, `No se ha enviado ningún campo editable. Campos permitidos: ${CAMPOS_EDITABLES.join(', ')}`);
+  }
+
+  // La ubicación se actualiza por subcampos para permitir cambiar solo la zona o la instalación
+  const { ubicacion, ...resto } = datos;
+  evento.set(resto);
+  if (ubicacion) {
+    for (const [subcampo, valor] of Object.entries(ubicacion)) {
+      evento.set(`ubicacion.${subcampo}`, valor);
+    }
+  }
+
+  if (typeof evento.aforoMax === 'number' && evento.aforoMax < evento.inscritos.length) {
+    throw new ErrorApi(
+      409,
+      `El aforo máximo no puede ser menor que el número de inscritos (${evento.inscritos.length})`
+    );
+  }
+
+  await evento.save();
+  return formatearEvento(evento, usuario._id);
+}
+
 module.exports = {
   crearEvento,
   obtenerDetalle,
+  editarEvento,
 };

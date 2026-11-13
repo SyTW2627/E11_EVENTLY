@@ -42,10 +42,8 @@ router.get('/:id', verificarToken, eventosController.detalle);
 // POST: Publicar un nuevo evento (SCRUM-53)
 router.post('/', verificarToken, eventosController.crear);
 
-// PUT: Actualizar un evento
-router.put('/:id', verificarToken, async (req, res) => {
-    res.status(200).json({ message: `Evento ${req.params.id} actualizado correctamente` });
-});
+// PUT: Edición parcial de un evento por su organizador (SCRUM-49)
+router.put('/:id', verificarToken, eventosController.editar);
 
 // DELETE: Eliminar un evento
 router.delete('/:id', verificarToken, async (req, res) => {
