@@ -1,0 +1,78 @@
+<div class="flex items-center justify-center min-h-[85vh] p-4">
+  <div class="card w-full max-w-md sm:p-8 p-6">
+    
+    <!-- Bloque de Branding y Bienvenida -->
+    <div class="flex flex-col items-center mb-8 text-center">
+      <div class="w-12 h-12 bg-[#0a5c36] text-white rounded-xl flex items-center justify-center text-2xl font-bold mb-4 shadow-lg shadow-green-900/20">Q</div>
+      <h2 class="text-2xl font-bold text-gray-900">Crea tu cuenta</h2>
+      <p class="text-gray-500 text-sm mt-1.5">Únete a Evently y encuentra tu próximo partido</p>
+    </div>
+    
+    <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+      
+      <!-- Campo Email -->
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="text-sm font-semibold text-gray-700">Correo electrónico</label>
+        <input 
+          id="email" 
+          type="email" 
+          formControlName="email" 
+          class="input-base" 
+          placeholder="tu@email.com"
+        >
+        @if (registroForm.get('email')?.touched && registroForm.get('email')?.hasError('required')) {
+          <span class="text-red-500 text-xs font-medium mt-1">El email es obligatorio.</span>
+        }
+        @if (registroForm.get('email')?.touched && registroForm.get('email')?.hasError('email')) {
+          <span class="text-red-500 text-xs font-medium mt-1">Formato de email inválido.</span>
+        }
+      </div>
+
+      <!-- Campo Contraseña -->
+      <div class="flex flex-col gap-1.5">
+        <label for="password" class="text-sm font-semibold text-gray-700">Contraseña</label>
+        <input 
+          id="password" 
+          type="password" 
+          formControlName="password" 
+          class="input-base" 
+          placeholder="Mínimo 6 caracteres"
+        >
+        @if (registroForm.get('password')?.touched && registroForm.get('password')?.hasError('required')) {
+          <span class="text-red-500 text-xs font-medium mt-1">La contraseña es obligatoria.</span>
+        }
+        @if (registroForm.get('password')?.touched && registroForm.get('password')?.hasError('minlength')) {
+          <span class="text-red-500 text-xs font-medium mt-1">Debe tener al menos 6 caracteres.</span>
+        }
+      </div>
+
+      <!-- Campo Repetir Contraseña -->
+      <div class="flex flex-col gap-1.5">
+        <label for="confirmPassword" class="text-sm font-semibold text-gray-700">Repetir Contraseña</label>
+        <input 
+          id="confirmPassword" 
+          type="password" 
+          formControlName="confirmPassword" 
+          class="input-base" 
+          placeholder="Vuelve a escribir la contraseña"
+        >
+        <!-- Mostramos el error si el validador personalizado (mismatch) salta -->
+        @if (registroForm.get('confirmPassword')?.touched && registroForm.hasError('mismatch')) {
+          <span class="text-red-500 text-xs font-medium mt-1">Las contraseñas no coinciden.</span>
+        }
+      </div>
+
+      <!-- Botón Enviar -->
+      <button type="submit" class="btn-primary w-full mt-4 py-3 text-base">
+        Registrarme gratis
+      </button>
+    </form>
+
+    <!-- Enlace de vuelta al login -->
+    <div class="mt-6 text-center text-sm text-gray-600">
+      ¿Ya tienes cuenta? 
+      <a routerLink="/login" class="text-[#0a5c36] font-semibold hover:underline">Inicia sesión</a>
+    </div>
+    
+  </div>
+</div>

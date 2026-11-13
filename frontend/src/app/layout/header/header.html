@@ -1,1 +1,44 @@
-<p>header works!</p>
+<header class="bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+  
+  <!-- Izquierda: Logo (Siempre visible) -->
+  <div class="flex items-center gap-8">
+    <a routerLink="/" class="flex items-center gap-2 text-xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
+      <div class="w-8 h-8 bg-[#0a5c36] text-white rounded-lg flex items-center justify-center shadow-sm">Q</div>
+      <span>Evently</span>
+    </a>
+    
+    <!-- Navegación: SOLO VISIBLE SI ESTÁ LOGUEADO -->
+    @if (isLoggedIn) {
+      <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-500">
+        <a routerLink="/tablon" class="hover:text-[#0a5c36] transition-colors">Tablón</a>
+        <a routerLink="/perfil" class="hover:text-[#0a5c36] transition-colors">Perfil</a>
+      </nav>
+    }
+  </div>
+
+  <!-- Derecha: Botones dinámicos según el estado -->
+  <div class="flex items-center gap-4">
+    
+    @if (isLoggedIn) {
+      <!-- ESTADO 1: Usuario Autenticado (Ve el avatar y publicar evento) -->
+      <button class="hidden sm:block bg-[#0a5c36] text-white px-4 py-2 rounded-[50px] text-sm font-semibold hover:bg-[#08492b] transition-colors shadow-sm">
+        + Publicar evento
+      </button>
+      
+      <!-- Fíjate que al avatar le he puesto el routerLink="/perfil" para que funcione al hacer clic -->
+      <div routerLink="/perfil" class="w-9 h-9 rounded-full bg-green-50 border border-green-200 text-[#0a5c36] flex items-center justify-center font-bold text-sm cursor-pointer hover:bg-green-100 transition-colors">
+        CR
+      </div>
+      
+    } @else {
+      <!-- ESTADO 2: Usuario Invitado (Ve opciones de entrar o registrarse) -->
+      <a routerLink="/login" class="text-sm font-semibold text-gray-600 hover:text-[#0a5c36] transition-colors">
+        Iniciar sesión
+      </a>
+      <a routerLink="/registro" class="hidden sm:block bg-[#0a5c36] text-white px-4 py-2 rounded-[50px] text-sm font-semibold hover:bg-[#08492b] transition-colors shadow-sm">
+        Regístrate
+      </a>
+    }
+    
+  </div>
+</header>

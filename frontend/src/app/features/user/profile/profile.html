@@ -1,48 +1,99 @@
-<div style="max-width: 600px; margin: 2rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px;">
-  <h2 style="margin-bottom: 1.5rem; text-align: center;">Configuración del Perfil</h2>
+<div class="flex items-start justify-center min-h-[85vh] p-4 pt-10 md:pt-16">
   
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 1.2rem;">
+  <!-- Tarjeta más ancha (max-w-4xl) para formato escritorio -->
+  <div class="card w-full max-w-4xl flex flex-col md:flex-row gap-10 sm:p-10 p-6">
     
-    <!-- Fila para Nombre y Apellidos -->
-    <div style="display: flex; gap: 1rem;">
-      <div style="flex: 1; display: flex; flex-direction: column; gap: 0.3rem;">
-        <label for="nombre">Nombre</label>
-        <input id="nombre" type="text" formControlName="nombre" style="padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
-        @if (profileForm.controls.nombre.touched && profileForm.controls.nombre.hasError('required')) {
-          <span style="color: #dc3545; font-size: 0.85rem;">El nombre es obligatorio.</span>
-        }
+    <!-- COLUMNA IZQUIERDA: Avatar y presentación visual -->
+    <div class="flex flex-col items-center md:items-start md:w-1/3 md:border-r border-gray-100 md:pr-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-6 hidden md:block">Tu Foto</h2>
+      
+      <div class="flex flex-col items-center gap-4 w-full">
+        <!-- Avatar grande -->
+        <div class="w-32 h-32 rounded-full bg-green-50 border-4 border-white shadow-lg text-[#0a5c36] flex items-center justify-center text-4xl font-bold">
+          CR
+        </div>
+        
+        <!-- Input de archivo real (Oculto mediante la clase 'hidden' de Tailwind) -->
+        <input 
+          type="file" 
+          #fileInput 
+          class="hidden" 
+          accept="image/png, image/jpeg"
+        >
+
+        <!-- Botón visual que hace "clic" en el input oculto -->
+        <button 
+          type="button" 
+          (click)="fileInput.click()"
+          class="text-sm font-semibold text-[#0a5c36] bg-green-50 px-4 py-2 rounded-[50px] hover:bg-green-100 transition-colors w-full md:w-auto">
+          Cambiar imagen
+        </button>
+        
+        <p class="text-xs text-center text-gray-400 mt-2">
+          Sube una foto tuya en formato JPG o PNG. Tamaño máximo 2MB.
+        </p>
       </div>
+    </div>
 
-      <div style="flex: 1; display: flex; flex-direction: column; gap: 0.3rem;">
-        <label for="apellidos">Apellidos</label>
-        <input id="apellidos" type="text" formControlName="apellidos" style="padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
-        @if (profileForm.controls.apellidos.touched && profileForm.controls.apellidos.hasError('required')) {
-          <span style="color: #dc3545; font-size: 0.85rem;">Los apellidos son obligatorios.</span>
-        }
+    <!-- COLUMNA DERECHA: El formulario real -->
+    <div class="md:w-2/3">
+      <div class="border-b border-gray-100 pb-4 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Configuración de datos</h2>
+        <p class="text-sm text-gray-500 mt-1">Completa tu información para que otros jugadores te conozcan.</p>
       </div>
-    </div>
+      
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+        
+        <!-- Fila: Nombre y Apellidos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-1.5">
+            <label for="nombre" class="text-sm font-semibold text-gray-700">Nombre</label>
+            <input id="nombre" type="text" formControlName="nombre" class="input-base">
+            @if (profileForm.controls.nombre.touched && profileForm.controls.nombre.hasError('required')) {
+              <span class="text-red-500 text-xs font-medium">El nombre es obligatorio.</span>
+            }
+          </div>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="apellidos" class="text-sm font-semibold text-gray-700">Apellidos</label>
+            <input id="apellidos" type="text" formControlName="apellidos" class="input-base">
+            @if (profileForm.controls.apellidos.touched && profileForm.controls.apellidos.hasError('required')) {
+              <span class="text-red-500 text-xs font-medium">Los apellidos son obligatorios.</span>
+            }
+          </div>
+        </div>
 
-    <!-- Campo Teléfono -->
-    <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-      <label for="telefono">Teléfono de contacto</label>
-      <input id="telefono" type="tel" formControlName="telefono" placeholder="Ej: 600123456" style="padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
-      @if (profileForm.controls.telefono.touched && profileForm.controls.telefono.hasError('pattern')) {
-        <span style="color: #dc3545; font-size: 0.85rem;">Debe contener exactamente 9 números.</span>
-      }
-    </div>
+        <!-- Fila: Teléfono -->
+        <div class="flex flex-col gap-1.5">
+          <label for="telefono" class="text-sm font-semibold text-gray-700">Teléfono de contacto</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">+34</span>
+            <input id="telefono" type="tel" formControlName="telefono" placeholder="Ej: 600123456" class="input-base pl-12">
+          </div>
+          @if (profileForm.controls.telefono.touched && profileForm.controls.telefono.hasError('pattern')) {
+            <span class="text-red-500 text-xs font-medium mt-1">Debe contener exactamente 9 números.</span>
+          }
+        </div>
 
-    <!-- Campo Biografía -->
-    <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-      <label for="biografia">Sobre mí (Biografía)</label>
-      <textarea id="biografia" formControlName="biografia" rows="4" style="padding: 10px; border-radius: 4px; border: 1px solid #ccc; resize: vertical;"></textarea>
-      @if (profileForm.controls.biografia.touched && profileForm.controls.biografia.hasError('maxlength')) {
-        <span style="color: #dc3545; font-size: 0.85rem;">Máximo 200 caracteres.</span>
-      }
-    </div>
+        <!-- Fila: Biografía -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex justify-between items-baseline">
+            <label for="biografia" class="text-sm font-semibold text-gray-700">Sobre mí (Biografía)</label>
+            <span class="text-xs text-gray-400">Opcional</span>
+          </div>
+          <textarea id="biografia" formControlName="biografia" rows="4" class="input-base resize-y" placeholder="Hola, suelo jugar los fines de semana. Me gusta el pádel y el fútbol 7..."></textarea>
+          @if (profileForm.controls.biografia.touched && profileForm.controls.biografia.hasError('maxlength')) {
+            <span class="text-red-500 text-xs font-medium">Máximo 200 caracteres.</span>
+          }
+        </div>
 
-    <!-- Botón Guardar -->
-    <button type="submit" style="margin-top: 1rem; padding: 12px; background-color: #198754; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
-      Guardar Cambios
-    </button>
-  </form>
+        <div class="mt-2 pt-6 border-t border-gray-100 flex justify-end">
+          <button type="submit" class="btn-primary px-8 py-2.5">
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+    
+  </div>
 </div>

@@ -1,60 +1,119 @@
-<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+<div class="flex items-start justify-center min-h-[85vh] p-4 pt-10 md:pt-16">
+  
+  <!-- Tarjeta principal ancha -->
+  <div class="card w-full max-w-4xl flex flex-col md:flex-row gap-10 sm:p-10 p-6">
     
-    <div class="text-center mb-8">
-      <h2 class="text-3xl font-extrabold text-gray-900">Crear Partido</h2>
-      <p class="mt-2 text-sm text-gray-600">Organiza tu próximo evento deportivo</p>
+    <!-- COLUMNA IZQUIERDA: Contexto y Consejos -->
+    <div class="flex flex-col md:w-1/3 md:border-r border-gray-100 md:pr-8">
+      
+      <!-- Icono decorativo -->
+      <div class="w-12 h-12 bg-green-50 text-[#0a5c36] rounded-xl flex items-center justify-center text-2xl mb-6 shadow-sm border border-green-100">
+        🏟️
+      </div>
+      
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Publicar Partido</h2>
+      <p class="text-sm text-gray-500 mb-8 leading-relaxed">
+        Rellena los datos para que tu evento aparezca en el tablón. Cuanto más claro seas, más rápido se llenarán las plazas.
+      </p>
+      
+      <!-- Sección de consejos (Se oculta en móviles para ahorrar espacio) -->
+      <div class="hidden md:flex flex-col gap-5 bg-gray-50 p-5 rounded-xl border border-gray-100">
+        <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Consejos para organizar</h3>
+        
+        <div class="flex items-start gap-3">
+          <div class="text-[#0a5c36] bg-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm text-xs mt-0.5">📍</div>
+          <p class="text-xs text-gray-600 leading-relaxed"><strong class="text-gray-800">Sé específico:</strong> "Fútbol 7 en La Verdellada" atrae más que "Partido de fútbol".</p>
+        </div>
+        
+        <div class="flex items-start gap-3">
+          <div class="text-[#0a5c36] bg-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm text-xs mt-0.5">👥</div>
+          <p class="text-xs text-gray-600 leading-relaxed"><strong class="text-gray-800">Plazas reales:</strong> Indica solo los jugadores que te faltan para completar los equipos.</p>
+        </div>
+      </div>
     </div>
 
-    <form [formGroup]="publishForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- COLUMNA DERECHA: El Formulario -->
+    <div class="md:w-2/3 flex flex-col justify-center">
       
-      <!-- Título -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Título del evento</label>
-        <input type="text" formControlName="titulo" placeholder="Ej. Fútbol 7 en La Laguna" 
-               class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
-      </div>
-
-      <!-- Deporte -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Deporte</label>
-        <select formControlName="deporte" 
-                class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
-          <option value="">Selecciona un deporte...</option>
-          <option value="futbol">Fútbol</option>
-          <option value="baloncesto">Baloncesto</option>
-          <option value="padel">Pádel</option>
-          <option value="voley">Vóley Playa</option>
-        </select>
-      </div>
-
-      <!-- Fecha y Participantes (en dos columnas) -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Fecha</label>
-          <input type="date" formControlName="fecha" 
-                 class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+      <form [formGroup]="publishForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+        
+        <!-- Fila 1: Título completo -->
+        <div class="flex flex-col gap-1.5">
+          <label for="titulo" class="text-sm font-semibold text-gray-700">Título del evento</label>
+          <input 
+            id="titulo" 
+            type="text" 
+            formControlName="titulo" 
+            class="input-base text-lg" 
+            placeholder="Ej. Pachanga de Fútbol 7 (Nivel Medio)"
+          >
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Participantes</label>
-          <input type="number" formControlName="maxParticipantes" 
-                 class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+
+        <!-- Fila 2: Deporte y Participantes -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-1.5">
+            <label for="deporte" class="text-sm font-semibold text-gray-700">Deporte</label>
+            <select id="deporte" formControlName="deporte" class="input-base bg-white cursor-pointer">
+              <option value="" disabled selected>Selecciona...</option>
+              <option value="futbol">Fútbol</option>
+              <option value="baloncesto">Baloncesto</option>
+              <option value="padel">Pádel</option>
+              <option value="voley">Vóley Playa</option>
+            </select>
+          </div>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="participantes" class="text-sm font-semibold text-gray-700">Huecos libres</label>
+            <div class="relative">
+              <input 
+                id="participantes" 
+                type="number" 
+                min="1" 
+                formControlName="maxParticipantes" 
+                class="input-base pl-10" 
+                placeholder="Ej. 4"
+              >
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">👤</span>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- Ubicación -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Ubicación</label>
-        <input type="text" formControlName="ubicacion" placeholder="Campus de Guajara" 
-               class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
-      </div>
+        <!-- Fila 3: Fecha y Ubicación -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-1.5">
+            <label for="fecha" class="text-sm font-semibold text-gray-700">Fecha del partido</label>
+            <input 
+              id="fecha" 
+              type="date" 
+              formControlName="fecha" 
+              class="input-base"
+            >
+          </div>
 
-      <!-- Botón de Submit -->
-      <button type="submit" 
-              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all cursor-pointer">
-        Publicar Evento
-      </button>
+          <div class="flex flex-col gap-1.5">
+            <label for="ubicacion" class="text-sm font-semibold text-gray-700">Ubicación</label>
+            <div class="relative">
+              <input 
+                id="ubicacion" 
+                type="text" 
+                formControlName="ubicacion" 
+                class="input-base pl-10" 
+                placeholder="Ej. Campus de Guajara"
+              >
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">📍</span>
+            </div>
+          </div>
+        </div>
 
-    </form>
+        <!-- Botón de acción -->
+        <div class="mt-4 pt-6 border-t border-gray-100 flex justify-end">
+          <button type="submit" class="btn-primary px-8 py-3 text-base shadow-lg shadow-green-900/20 w-full sm:w-auto">
+            Publicar en el tablón
+          </button>
+        </div>
+
+      </form>
+    </div>
+    
   </div>
 </div>
