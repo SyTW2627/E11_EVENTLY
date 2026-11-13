@@ -24,10 +24,8 @@ const authRoutes = require('./routes/auth.routes');
 app.use('/api/events', eventsRoutes);
 app.use('/api/auth', authRoutes);
 
-// Importar las rutass
-const eventsRoutes = require('./routes/events.routes');
-
-// Usar las rutas importadas (Todo lo que vaya a /api/events lo gestionará events.routes.js)
-app.use('/api/events', eventsRoutes);
+// Gestor de errores común: siempre después de las rutas
+const gestorErrores = require('./middlewares/gestorErrores');
+app.use(gestorErrores);
 
 module.exports = app;
