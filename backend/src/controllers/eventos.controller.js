@@ -8,6 +8,13 @@ async function crear(req, res) {
   res.status(201).json({ mensaje: 'Evento publicado correctamente', evento });
 }
 
+// GET /api/events/:id
+async function detalle(req, res) {
+  const evento = await eventosService.obtenerDetalle(req.params.id, req.usuario);
+  res.status(200).json({ evento });
+}
+
 module.exports = {
   crear,
+  detalle,
 };

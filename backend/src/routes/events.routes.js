@@ -36,10 +36,8 @@ router.get('/', verificarToken, async (req, res) => {
     res.status(200).json({ message: 'Lista de eventos obtenida con éxito (Ruta protegida)' });
 });
 
-// GET: Obtener un evento por ID
-router.get('/:id', verificarToken, async (req, res) => {
-    res.status(200).json({ message: `Detalles del evento ${req.params.id}` });
-});
+// GET: Detalle de un evento (SCRUM-49)
+router.get('/:id', verificarToken, eventosController.detalle);
 
 // POST: Publicar un nuevo evento (SCRUM-53)
 router.post('/', verificarToken, eventosController.crear);

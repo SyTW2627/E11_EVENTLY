@@ -61,6 +61,19 @@ async function obtenerUsuarioAutenticado(datosToken) {
   return usuario;
 }
 
+// Comprueba el formato del id y devuelve el evento, o lanza 400/404.
+async function buscarEvento(id) {
+  if (typeof id !== 'string' || !/^[0-9a-fA-F]{24}$/.test(id)) {
+    throw new ErrorApi(400, 'El id del evento no tiene un formato válido');
+  }
+
+  const evento = await Evento.findById(id);
+  if (!evento) {
+    throw new ErrorApi(404, 'El evento no existe');
+  }
+  return evento;
+}
+
 const esMismoUsuario = (a, b) => String(a) === String(b);
 
 // Prepara un evento para la respuesta: organizador, inscritos y autores de comentarios
@@ -96,6 +109,14 @@ async function crearEvento(cuerpo, datosToken) {
   return formatearEvento(evento, usuario._id);
 }
 
+// SCRUM-49: detalle de un evento.
+async function obtenerDetalle(id, datosToken) {
+  const usuario = await obtenerUsuarioAutenticado(datosToken);
+  const evento = await buscarEvento(id);
+  return formatearEvento(evento, usuario._id);
+}
+
 module.exports = {
   crearEvento,
+  obtenerDetalle,
 };
