@@ -167,8 +167,25 @@ async function editarEvento(id, cuerpo, datosToken) {
   return formatearEvento(evento, usuario._id);
 }
 
+// SCRUM-49: cancelación de un evento por su organizador. No se borra: se marca como cancelado.
+async function cancelarEvento(id, datosToken) {
+  const usuario = await obtenerUsuarioAutenticado(datosToken);
+  const evento = await buscarEvento(id);
+  comprobarOrganizador(evento, usuario);
+
+  if (evento.estado === 'cancelado') {
+    throw new ErrorApi(409, 'El evento ya está cancelado');
+  }
+
+  evento.estado = 'cancelado';
+  // Solo se valida el estado para no bloquear la cancelación por datos antiguos
+  await evento.save({ validateModifiedOnly: true });
+  return formatearEvento(evento, usuario._id);
+}
+
 module.exports = {
   crearEvento,
   obtenerDetalle,
   editarEvento,
+  cancelarEvento,
 };

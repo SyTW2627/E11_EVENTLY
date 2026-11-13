@@ -20,8 +20,15 @@ async function editar(req, res) {
   res.status(200).json({ mensaje: 'Evento actualizado correctamente', evento });
 }
 
+// DELETE /api/events/:id (cancela el evento, no lo borra)
+async function cancelar(req, res) {
+  const evento = await eventosService.cancelarEvento(req.params.id, req.usuario);
+  res.status(200).json({ mensaje: 'Evento cancelado correctamente', evento });
+}
+
 module.exports = {
   crear,
   detalle,
   editar,
+  cancelar,
 };

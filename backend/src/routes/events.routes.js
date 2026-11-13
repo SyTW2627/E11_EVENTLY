@@ -45,9 +45,7 @@ router.post('/', verificarToken, eventosController.crear);
 // PUT: Edición parcial de un evento por su organizador (SCRUM-49)
 router.put('/:id', verificarToken, eventosController.editar);
 
-// DELETE: Eliminar un evento
-router.delete('/:id', verificarToken, async (req, res) => {
-    res.status(200).json({ message: `Evento ${req.params.id} eliminado` });
-});
+// DELETE: Cancelar un evento; no se borra, se marca como cancelado (SCRUM-49)
+router.delete('/:id', verificarToken, eventosController.cancelar);
 
 module.exports = router;
