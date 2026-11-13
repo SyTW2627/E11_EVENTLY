@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+const eventosController = require('../controllers/eventos.controller');
 
 // 1. Middleware de Autenticación: El guardián de las rutas
 const verificarToken = (req, res, next) => {
@@ -35,34 +36,16 @@ router.get('/', verificarToken, async (req, res) => {
     res.status(200).json({ message: 'Lista de eventos obtenida con éxito (Ruta protegida)' });
 });
 
-// GET: Obtener un evento por ID
-router.get('/:id', verificarToken, async (req, res) => {
-    res.status(200).json({ message: `Detalles del evento ${req.params.id}` });
-});
+// GET: Detalle de un evento (SCRUM-49)
+router.get('/:id', verificarToken, eventosController.detalle);
 
-// POST: Crear un nuevo evento
-router.post('/', verificarToken, async (req, res) => {
-    const { titulo, descripcion, fecha, ubicacion } = req.body;
-    
-    if (!titulo || !fecha) {
-        return res.status(400).json({ message: 'El título y la fecha son obligatorios' });
-    }
+// POST: Publicar un nuevo evento (SCRUM-53)
+router.post('/', verificarToken, eventosController.crear);
 
-    res.status(201).json({ 
-        message: 'Evento creado exitosamente', 
-        creador: req.usuario.email, // Sabemos quién lo crea gracias al token
-        evento: { titulo, descripcion, fecha, ubicacion }
-    });
-});
+// PUT: Edición parcial de un evento por su organizador (SCRUM-49)
+router.put('/:id', verificarToken, eventosController.editar);
 
-// PUT: Actualizar un evento
-router.put('/:id', verificarToken, async (req, res) => {
-    res.status(200).json({ message: `Evento ${req.params.id} actualizado correctamente` });
-});
-
-// DELETE: Eliminar un evento
-router.delete('/:id', verificarToken, async (req, res) => {
-    res.status(200).json({ message: `Evento ${req.params.id} eliminado` });
-});
+// DELETE: Cancelar un evento; no se borra, se marca como cancelado (SCRUM-49)
+router.delete('/:id', verificarToken, eventosController.cancelar);
 
 module.exports = router;
