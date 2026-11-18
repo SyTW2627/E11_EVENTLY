@@ -57,17 +57,42 @@
       </form>
     </div>
 
-    <!-- Contenedor del Grid (Preparado para la tarea SCRUM-67) -->
+    <!-- Contenedor del Grid (SCRUM-67 Integrada) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       
-      <!-- Placeholder temporal para que veas dónde irán las tarjetas que harás luego -->
-      <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 text-gray-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-        <span class="text-sm font-medium">Tarjeta de evento (SCRUM-67)</span>
-      </div>
-      
+      <!-- Evento 1: Con plazas -->
+      <app-event-card 
+        titulo="Pachanga de Jueves" 
+        deporte="Fútbol 7" 
+        fecha="20 de Noviembre, 19:30" 
+        lugar="Pabellón ULL"
+        nivel="Amateur" 
+        [inscritos]="10" 
+        [aforoMaximo]="14">
+      </app-event-card>
+
+      <!-- Evento 2: Lleno -->
+      <app-event-card 
+        titulo="Torneo rápido Padel" 
+        deporte="Pádel" 
+        fecha="22 de Noviembre, 10:00" 
+        lugar="Cancha Las Mantecas"
+        nivel="Avanzado" 
+        [inscritos]="4" 
+        [aforoMaximo]="4">
+      </app-event-card>
+
+      <!-- Evento 3: Pocos inscritos -->
+      <app-event-card 
+        titulo="Entreno Vóley Playa" 
+        deporte="Vóley Playa" 
+        fecha="25 de Noviembre, 16:00"
+        lugar="Charco Verde" 
+        nivel="Intermedio" 
+        [inscritos]="2" 
+        [aforoMaximo]="8">
+      </app-event-card>
+
     </div>
     
   </div>

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { EventCardComponent } from '../../components/event-card/event-card';
 
 @Component({
   selector: 'app-event-board',
+  imports: [EventCardComponent],
   templateUrl: './event-board.html',
   styleUrls: ['./event-board.scss']
 })
