@@ -30,7 +30,7 @@ const verificarToken = (req, res, next) => {
 
 // 2. Endpoints protegidos (Usamos 'verificarToken' como filtro intermedio)
 
-// GET: Obtener eventos activos con paginación (SCRUM-83)
+// GET: Obtener eventos activos con paginación y filtros (SCRUM-83 y SCRUM-84)
 router.get('/', verificarToken, eventosController.listar);
 
 // GET: Detalle de un evento (SCRUM-49)
@@ -44,5 +44,11 @@ router.put('/:id', verificarToken, eventosController.editar);
 
 // DELETE: Cancelar un evento; no se borra, se marca como cancelado (SCRUM-49)
 router.delete('/:id', verificarToken, eventosController.cancelar);
+
+// POST: Inscribirse en un evento (SCRUM-85 y SCRUM-86)
+router.post('/:id/inscripcion', verificarToken, eventosController.inscribirse);
+
+// DELETE: Darse de baja de un evento (SCRUM-85 y SCRUM-86)
+router.delete('/:id/inscripcion', verificarToken, eventosController.darseDeBaja);
 
 module.exports = router;
