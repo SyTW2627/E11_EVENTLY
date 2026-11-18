@@ -39,7 +39,7 @@ export class LoginComponent {
           }
           
           // 2. Redirigimos al perfil tras iniciar sesión (Atraviesa el Guard de la SCRUM-46)
-          this.router.navigate(['/perfil']); 
+          this.router.navigate(['/tablon']); 
         },
         error: (error: any) => { 
           console.error('Error en el login', error);

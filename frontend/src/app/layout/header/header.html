@@ -2,7 +2,7 @@
   
   <!-- Izquierda: Logo (Siempre visible) -->
   <div class="flex items-center gap-8">
-    <a routerLink="/" class="flex items-center gap-2 text-xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
+    <a routerLink="/tablon" class="flex items-center gap-2 text-xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
       <div class="w-8 h-8 bg-[#0a5c36] text-white rounded-lg flex items-center justify-center shadow-sm">Q</div>
       <span>Evently</span>
     </a>
@@ -21,7 +21,7 @@
     
     @if (isLoggedIn) {
       <!-- ESTADO 1: Usuario Autenticado (Ve el avatar y publicar evento) -->
-      <button class="hidden sm:block bg-[#0a5c36] text-white px-4 py-2 rounded-[50px] text-sm font-semibold hover:bg-[#08492b] transition-colors shadow-sm">
+      <button routerLink="/publicar" class="hidden sm:block bg-[#0a5c36] text-white px-4 py-2 rounded-[50px] text-sm font-semibold hover:bg-[#08492b] transition-colors shadow-sm">
         + Publicar evento
       </button>
       

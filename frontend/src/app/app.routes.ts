@@ -7,6 +7,7 @@ import { UserProvisioningComponent } from './features/admin/user-provisioning/us
 import { authGuard } from './core/guards/auth-guard';
 import { EventPublishComponent } from './features/events/event-publish/event-publish';
 import { RegistroComponent } from './registro/registro';
+import { EventBoardComponent } from './pages/event-board/event-board';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,7 @@ export const routes: Routes = [
       { path: 'onboarding', component: OnboardingComponent, canActivate: [authGuard] },
       { path: 'usuarios', component: UserProvisioningComponent, canActivate: [authGuard] },
       { path: 'publicar', component: EventPublishComponent, canActivate: [authGuard] },
+      { path: 'tablon', component: EventBoardComponent, canActivate: [authGuard] },
     ]
   }
 ];
