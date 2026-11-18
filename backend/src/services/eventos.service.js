@@ -1,4 +1,4 @@
-// Lógica de negocio de los eventos: publicación, detalle, edición y cancelación.
+// Lógica de negocio de los eventos: listado, publicación, detalle, edición y cancelación.
 // Los errores se lanzan como ErrorApi y los traduce a respuesta el gestor de errores.
 const Evento = require('../models/Evento');
 const Usuario = require('../models/Usuario');
@@ -101,6 +101,36 @@ async function formatearEvento(evento, idUsuario) {
   return json;
 }
 
+// SCRUM-83: listado de eventos activos con paginación.
+async function listarEventosActivos({ page = 1, limit = 10 } = {}) {
+  const pagina = Math.max(1, parseInt(page, 10) || 1);
+  const limite = Math.min(50, Math.max(1, parseInt(limit, 10) || 10));
+  const skip = (pagina - 1) * limite;
+
+  const filtro = { estado: 'activo' };
+
+  const [eventos, total] = await Promise.all([
+    Evento.find(filtro)
+      .select('-comentarios')
+      .populate('organizador', CAMPOS_USUARIO_PUBLICOS)
+      .populate('inscritos.usuario', CAMPOS_USUARIO_PUBLICOS)
+      .sort({ fechaInicio: 1 })
+      .skip(skip)
+      .limit(limite),
+    Evento.countDocuments(filtro),
+  ]);
+
+  return {
+    eventos,
+    paginacion: {
+      total,
+      pagina,
+      limite,
+      totalPaginas: Math.ceil(total / limite),
+    },
+  };
+}
+
 // SCRUM-53: publica un evento nuevo. El organizador sale del token y queda inscrito.
 async function crearEvento(cuerpo, datosToken) {
   const usuario = await obtenerUsuarioAutenticado(datosToken);
@@ -184,6 +214,7 @@ async function cancelarEvento(id, datosToken) {
 }
 
 module.exports = {
+  listarEventosActivos,
   crearEvento,
   obtenerDetalle,
   editarEvento,

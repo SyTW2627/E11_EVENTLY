@@ -2,6 +2,12 @@
 // Express 5 pasa al gestor de errores cualquier excepción de una función async.
 const eventosService = require('../services/eventos.service');
 
+// GET /api/events (SCRUM-83)
+async function listar(req, res) {
+  const resultado = await eventosService.listarEventosActivos(req.query);
+  res.status(200).json(resultado);
+}
+
 // POST /api/events
 async function crear(req, res) {
   const evento = await eventosService.crearEvento(req.body, req.usuario);
@@ -27,6 +33,7 @@ async function cancelar(req, res) {
 }
 
 module.exports = {
+  listar,
   crear,
   detalle,
   editar,

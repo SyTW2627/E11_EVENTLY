@@ -30,11 +30,8 @@ const verificarToken = (req, res, next) => {
 
 // 2. Endpoints protegidos (Usamos 'verificarToken' como filtro intermedio)
 
-// GET: Obtener todos los eventos
-router.get('/', verificarToken, async (req, res) => {
-    // Aquí se conectará con el esquema de Mongoose (SCRUM-48) para hacer el Event.find()
-    res.status(200).json({ message: 'Lista de eventos obtenida con éxito (Ruta protegida)' });
-});
+// GET: Obtener eventos activos con paginación (SCRUM-83)
+router.get('/', verificarToken, eventosController.listar);
 
 // GET: Detalle de un evento (SCRUM-49)
 router.get('/:id', verificarToken, eventosController.detalle);
