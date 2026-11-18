@@ -1,0 +1,74 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    
+    <!-- Cabecera del Tablón -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Tablón de Eventos</h1>
+      <p class="mt-2 text-sm text-gray-600">Encuentra y únete a los próximos partidos en tu zona.</p>
+    </div>
+
+    <!-- Panel de Filtros (Estilo tarjeta blanca acorde al Login/Registro) -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+      <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        
+        <!-- Filtro: Búsqueda por texto -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Buscar evento</label>
+          <input 
+            type="text" 
+            placeholder="Ej. Fútbol 7, Tenis..." 
+            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600"
+          >
+        </div>
+
+        <!-- Filtro: Categoría / Deporte -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Deporte</label>
+          <select class="w-full rounded-lg border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 bg-white">
+            <option value="">Todos los deportes</option>
+            <option value="futbol">Fútbol</option>
+            <option value="padel">Pádel</option>
+            <option value="baloncesto">Baloncesto</option>
+            <option value="voley">Vóley Playa</option>
+          </select>
+        </div>
+
+        <!-- Filtro: Fecha -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+          <input 
+            type="date" 
+            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 text-gray-600"
+          >
+        </div>
+
+        <!-- Botón de Acción Principal (Verde corporativo) -->
+        <div>
+          <button 
+            type="button" 
+            class="w-full bg-green-700 text-white py-2.5 px-4 rounded-lg hover:bg-green-800 transition-colors font-medium shadow-sm flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Aplicar filtros
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Contenedor del Grid (Preparado para la tarea SCRUM-67) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Placeholder temporal para que veas dónde irán las tarjetas que harás luego -->
+      <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 text-gray-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        <span class="text-sm font-medium">Tarjeta de evento (SCRUM-67)</span>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
