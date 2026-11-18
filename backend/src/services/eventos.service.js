@@ -3,6 +3,7 @@
 const Evento = require('../models/Evento');
 const Usuario = require('../models/Usuario');
 const ErrorApi = require('../utils/ErrorApi');
+const { DISCIPLINAS } = require('../utils/constantes');
 
 // Campos que el cliente puede enviar al crear o editar un evento. Cualquier otro
 // (organizador, estado, inscritos, comentarios...) se ignora.
@@ -24,6 +25,9 @@ const CAMPOS_USUARIO_PUBLICOS = 'nombre';
 
 const esObjetoPlano = (valor) =>
   valor !== null && typeof valor === 'object' && !Array.isArray(valor);
+
+// Escapa caracteres especiales para usar un texto de forma segura en una RegExp (SCRUM-84)
+const escaparRegex = (texto) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // Devuelve solo los campos permitidos presentes en el cuerpo de la petición.
 function filtrarCampos(cuerpo) {
@@ -101,13 +105,49 @@ async function formatearEvento(evento, idUsuario) {
   return json;
 }
 
-// SCRUM-83: listado de eventos activos con paginación.
-async function listarEventosActivos({ page = 1, limit = 10 } = {}) {
+// SCRUM-83 y SCRUM-84: listado de eventos activos con paginación y filtros (disciplina, zona, fecha).
+async function listarEventosActivos({ page = 1, limit = 10, disciplina, zona, fecha } = {}) {
   const pagina = Math.max(1, parseInt(page, 10) || 1);
   const limite = Math.min(50, Math.max(1, parseInt(limit, 10) || 10));
   const skip = (pagina - 1) * limite;
 
   const filtro = { estado: 'activo' };
+
+  // SCRUM-84: filtro por disciplina
+  if (typeof disciplina === 'string' && disciplina.trim() !== '') {
+    const disciplinaLimpia = disciplina.trim().toLowerCase();
+    if (!DISCIPLINAS.includes(disciplinaLimpia)) {
+      throw new ErrorApi(400, 'Los datos enviados no son válidos', {
+        disciplina: `La disciplina '${disciplina}' no es válida. Valores permitidos: ${DISCIPLINAS.join(', ')}`,
+      });
+    }
+    filtro.disciplina = disciplinaLimpia;
+  }
+
+  // SCRUM-84: filtro por zona (búsqueda parcial sin distinguir mayúsculas)
+  if (typeof zona === 'string' && zona.trim() !== '') {
+    filtro['ubicacion.zona'] = new RegExp(escaparRegex(zona.trim()), 'i');
+  }
+
+  // SCRUM-84: filtro por fecha (formato YYYY-MM-DD, cubre todo el día en UTC)
+  if (typeof fecha === 'string' && fecha.trim() !== '') {
+    const fechaLimpia = fecha.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaLimpia)) {
+      throw new ErrorApi(400, 'Los datos enviados no son válidos', {
+        fecha: 'La fecha debe tener el formato YYYY-MM-DD (ejemplo: 2026-11-20)',
+      });
+    }
+
+    const inicioDia = new Date(`${fechaLimpia}T00:00:00.000Z`);
+    const finDia = new Date(`${fechaLimpia}T23:59:59.999Z`);
+    if (Number.isNaN(inicioDia.getTime())) {
+      throw new ErrorApi(400, 'Los datos enviados no son válidos', {
+        fecha: 'La fecha proporcionada no es válida',
+      });
+    }
+
+    filtro.fechaInicio = { $gte: inicioDia, $lte: finDia };
+  }
 
   const [eventos, total] = await Promise.all([
     Evento.find(filtro)
