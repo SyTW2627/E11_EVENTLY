@@ -1,40 +1,49 @@
-import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../../services/auth/auth';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../core/services/api';
-import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink],
+  selector: 'app-login', 
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrls: ['./login.scss']
 })
-export class LoginComponent {
-  private fb = inject(FormBuilder);
-  private api = inject(ApiService);
-  private router = inject(Router);
+export class LoginComponent { 
+  loginForm: FormGroup;       
 
-  loginForm = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
-  });
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService,
+    private router: Router 
+  ) {
+    // Creamos el formulario solo con email y password (el login no pide nombre)
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
+    });
+  }
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const credentials = this.loginForm.getRawValue();
-      
-      // Enviamos la petición POST al backend 
-      this.api.post('login', credentials).subscribe({
-        next: (response: any) => {
-          console.log('¡Login exitoso!', response);
-          // Más adelante aquí guardaremos el token JWT en el LocalStorage
-          // y redirigiremos al usuario a la pantalla principal:
-          // this.router.navigate(['/']); 
+      // Usamos el método iniciarSesion del servicio
+      this.authService.iniciarSesion(this.loginForm.value).subscribe({
+        next: (respuesta: any) => { // <-- Arreglado el tipado estricto
+          console.log('Login exitoso', respuesta);
+          
+          // 1. Guardamos el token en el localStorage (SCRUM-45)
+          if (respuesta.token) {
+             this.authService.setToken(respuesta.token);
+          }
+          
+          // 2. Redirigimos al perfil tras iniciar sesión (Atraviesa el Guard de la SCRUM-46)
+          this.router.navigate(['/tablon']); 
         },
-        error: (err: any) => {
-          console.error('Error en la autenticación', err);
-          alert('Error al iniciar sesión. Comprueba tus datos o el estado del servidor.');
+        error: (error: any) => { 
+          console.error('Error en el login', error);
+          alert('Credenciales incorrectas');
         }
       });
     } else {
