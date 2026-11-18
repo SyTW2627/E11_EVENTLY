@@ -1,22 +1,43 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { MainLayoutComponent } from './main-layout';
+import { AuthService } from '../../services/auth/auth';
 
-import { MainLayout } from './main-layout';
-
-describe('MainLayout', () => {
-  let component: MainLayout;
-  let fixture: ComponentFixture<MainLayout>;
+describe('MainLayoutComponent', () => {
+  let component: MainLayoutComponent;
+  let fixture: ComponentFixture<MainLayoutComponent>;
 
   beforeEach(async () => {
+    // 1. Preparamos el espía para que el <app-header> (que es hijo de este componente) pueda arrancar sin dar error
+    const authSpy = { getToken: vi.fn() };
+
     await TestBed.configureTestingModule({
-      imports: [MainLayout],
+      imports: [MainLayoutComponent],
+      providers: [
+        provideRouter([]), // Para que el <router-outlet> y el Header funcionen
+        { provide: AuthService, useValue: authSpy }
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MainLayout);
+    fixture = TestBed.createComponent(MainLayoutComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges(); // Angular pinta el HTML
   });
 
-  it('should create', () => {
+  // TEST 1: Creación estructural
+  it('debe crearse correctamente', () => {
     expect(component).toBeTruthy();
+  });
+
+  // TEST 2: Comprobación del esqueleto de la aplicación
+  it('debe contener el header, el contenedor principal con router-outlet y el footer', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    
+    // Verificamos que el "sandwich" arquitectónico está bien montado
+    expect(compiled.querySelector('app-header')).toBeTruthy();
+    expect(compiled.querySelector('main.contenido-principal')).toBeTruthy();
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
+    expect(compiled.querySelector('app-footer')).toBeTruthy();
   });
 });
