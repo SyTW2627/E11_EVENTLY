@@ -1,4 +1,4 @@
-// Lógica de negocio de los eventos: listado, publicación, detalle, edición y cancelación.
+// Lógica de negocio de los eventos: listado, publicación, detalle, edición, cancelación e inscripciones.
 // Los errores se lanzan como ErrorApi y los traduce a respuesta el gestor de errores.
 const Evento = require('../models/Evento');
 const Usuario = require('../models/Usuario');
@@ -253,10 +253,76 @@ async function cancelarEvento(id, datosToken) {
   return formatearEvento(evento, usuario._id);
 }
 
+// SCRUM-85 y SCRUM-86: inscripción de un usuario a un evento con validaciones de negocio (aforo y duplicados).
+async function inscribirseEvento(id, datosToken) {
+  const usuario = await obtenerUsuarioAutenticado(datosToken);
+  const evento = await buscarEvento(id);
+
+  // SCRUM-86: validaciones de estado y fechas
+  if (evento.estado === 'cancelado') {
+    throw new ErrorApi(409, 'No te puedes inscribir en un evento cancelado');
+  }
+  if (evento.fechaFin.getTime() <= Date.now()) {
+    throw new ErrorApi(409, 'No te puedes inscribir en un evento que ya ha terminado');
+  }
+
+  // SCRUM-86: validación de duplicados
+  const yaInscrito = evento.inscritos.some((inscrito) =>
+    esMismoUsuario(inscrito.usuario, usuario._id)
+  );
+  if (yaInscrito) {
+    throw new ErrorApi(409, 'Ya estás inscrito en este evento');
+  }
+
+  // SCRUM-86: validación de aforo máximo
+  if (evento.inscritos.length >= evento.aforoMax) {
+    throw new ErrorApi(409, 'El evento ha alcanzado su aforo máximo');
+  }
+
+  evento.inscritos.push({ usuario: usuario._id });
+  await evento.save({ validateModifiedOnly: true });
+
+  return formatearEvento(evento, usuario._id);
+}
+
+// SCRUM-85 y SCRUM-86: baja de un usuario de un evento.
+async function darseDeBajaEvento(id, datosToken) {
+  const usuario = await obtenerUsuarioAutenticado(datosToken);
+  const evento = await buscarEvento(id);
+
+  // SCRUM-86: validaciones de estado y fechas
+  if (evento.estado === 'cancelado') {
+    throw new ErrorApi(409, 'No puedes darte de baja de un evento cancelado');
+  }
+  if (evento.fechaFin.getTime() <= Date.now()) {
+    throw new ErrorApi(409, 'No puedes darte de baja de un evento que ya ha terminado');
+  }
+
+  // SCRUM-86: el organizador no puede darse de baja (debe cancelar el evento)
+  if (esMismoUsuario(evento.organizador, usuario._id)) {
+    throw new ErrorApi(409, 'El organizador no puede darse de baja de su propio evento; debe cancelarlo');
+  }
+
+  // SCRUM-86: comprobar que el usuario realmente está inscrito
+  const indice = evento.inscritos.findIndex((inscrito) =>
+    esMismoUsuario(inscrito.usuario, usuario._id)
+  );
+  if (indice === -1) {
+    throw new ErrorApi(409, 'No estás inscrito en este evento');
+  }
+
+  evento.inscritos.splice(indice, 1);
+  await evento.save({ validateModifiedOnly: true });
+
+  return formatearEvento(evento, usuario._id);
+}
+
 module.exports = {
   listarEventosActivos,
   crearEvento,
   obtenerDetalle,
   editarEvento,
   cancelarEvento,
+  inscribirseEvento,
+  darseDeBajaEvento,
 };
