@@ -60,17 +60,25 @@ describe('EventBoardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('debe hacer un console.log con los filtros al ejecutar aplicarFiltros()', () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    component.filtros = { texto: 'Fútbol', deporte: 'futbol', fecha: '2026-11-20' };
+  it('debe enviar los filtros seleccionados como parámetros a la API al ejecutar aplicarFiltros()', () => {
+    component.filtros = {
+      zona: 'La Laguna',
+      disciplina: 'voley-playa',
+      fecha: '2026-11-26'
+    };
+
     component.aplicarFiltros();
-    expect(consoleSpy).toHaveBeenCalledWith('Filtros aplicados:', component.filtros);
-    consoleSpy.mockRestore();
+
+    expect(apiServiceMock.get).toHaveBeenCalledWith('events', {
+      zona: 'La Laguna',
+      disciplina: 'voley-playa',
+      fecha: '2026-11-26'
+    });
   });
 
   it('debe renderizar dinámicamente las tarjetas de eventos (app-event-card) recibidas de la API', () => {
     const tarjetasRenderizadas = fixture.nativeElement.querySelectorAll('app-event-card');
-    expect(apiServiceMock.get).toHaveBeenCalledWith('events');
+    expect(apiServiceMock.get).toHaveBeenCalledWith('events', {});
     expect(tarjetasRenderizadas.length).toBe(2);
     expect(component.isLoading()).toBe(false);
   });

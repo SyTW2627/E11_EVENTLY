@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { EventCardComponent } from '../../components/event-card/event-card';
 import { ApiService } from '../../core/services/api';
 
@@ -35,7 +36,7 @@ export interface RespuestaEventos {
 
 @Component({
   selector: 'app-event-board',
-  imports: [EventCardComponent, DatePipe],
+  imports: [EventCardComponent, DatePipe, FormsModule],
   templateUrl: './event-board.html',
   styleUrls: ['./event-board.scss']
 })
@@ -47,8 +48,8 @@ export class EventBoardComponent implements OnInit {
   errorMensaje = signal('');
 
   filtros = {
-    texto: '',
-    deporte: '',
+    zona: '',
+    disciplina: '',
     fecha: ''
   };
 
@@ -60,7 +61,12 @@ export class EventBoardComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMensaje.set('');
 
-    this.apiService.get<RespuestaEventos>('events').subscribe({
+    const params: Record<string, string> = {};
+    if (this.filtros.zona.trim()) params['zona'] = this.filtros.zona.trim();
+    if (this.filtros.disciplina) params['disciplina'] = this.filtros.disciplina;
+    if (this.filtros.fecha) params['fecha'] = this.filtros.fecha;
+
+    this.apiService.get<RespuestaEventos>('events', params).subscribe({
       next: (res) => {
         this.eventos.set(res.eventos || []);
         this.isLoading.set(false);
@@ -74,6 +80,6 @@ export class EventBoardComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
-    console.log('Filtros aplicados:', this.filtros);
+    this.cargarEventos();
   }
 }
