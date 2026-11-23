@@ -65,6 +65,21 @@
       </form>
     </div>
 
+    <!-- Mensaje de feedback de inscripción/baja -->
+    @if (feedbackMensaje(); as fb) {
+      <div 
+        class="mb-6 rounded-xl p-4 text-sm font-medium border flex justify-between items-center"
+        [class.bg-green-50]="fb.tipo === 'exito'"
+        [class.border-green-200]="fb.tipo === 'exito'"
+        [class.text-green-800]="fb.tipo === 'exito'"
+        [class.bg-red-50]="fb.tipo === 'error'"
+        [class.border-red-200]="fb.tipo === 'error'"
+        [class.text-red-800]="fb.tipo === 'error'">
+        <span>{{ fb.texto }}</span>
+        <button type="button" (click)="feedbackMensaje.set(null)" class="font-bold ml-4">✕</button>
+      </div>
+    }
+
     <!-- Estado 1: Cargando -->
     @if (isLoading()) {
       <div class="flex flex-col items-center justify-center py-16 text-gray-500">
@@ -95,7 +110,11 @@
             [lugar]="evento.ubicacion.instalacion + ' (' + evento.ubicacion.zona + ')'"
             [nivel]="evento.nivel" 
             [inscritos]="evento.inscritos.length" 
-            [aforoMaximo]="evento.aforoMax">
+            [aforoMaximo]="evento.aforoMax"
+            [estaInscrito]="!!eventosInscritos()[evento._id]"
+            [cargandoAccion]="procesandoEventoId() === evento._id"
+            (apuntarse)="inscribirse(evento._id)"
+            (darseDeBaja)="darseDeBaja(evento._id)">
           </app-event-card>
         } @empty {
           <div class="col-span-full bg-white rounded-xl border border-gray-100 p-12 text-center shadow-sm">

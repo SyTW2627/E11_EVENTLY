@@ -50,12 +50,32 @@
       }
     </div>
 
-    <!-- Botón -->
-    <button [disabled]="estaLleno" 
-            [class.opacity-50]="estaLleno"
-            [class.cursor-not-allowed]="estaLleno"
-            class="text-sm font-bold text-green-700 hover:text-green-800 transition-colors">
-      Ver más
-    </button>
+    <!-- Botón de Inscripción / Baja (SCRUM-89) -->
+    @if (estaInscrito) {
+      <button 
+        type="button"
+        (click)="darseDeBaja.emit()"
+        [disabled]="cargandoAccion"
+        [class.opacity-50]="cargandoAccion"
+        class="px-3 py-1.5 text-xs font-bold text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
+        {{ cargandoAccion ? 'Procesando...' : 'Darme de baja' }}
+      </button>
+    } @else {
+      <button 
+        type="button"
+        (click)="apuntarse.emit()"
+        [disabled]="estaLleno || cargandoAccion"
+        [class.opacity-50]="estaLleno || cargandoAccion"
+        [class.cursor-not-allowed]="estaLleno || cargandoAccion"
+        class="px-3 py-1.5 text-xs font-bold text-white bg-green-700 rounded-lg hover:bg-green-800 transition-colors">
+        @if (cargandoAccion) {
+          Procesando...
+        } @else if (estaLleno) {
+          Completo
+        } @else {
+          Apuntarme
+        }
+      </button>
+    }
   </div>
 </div>
