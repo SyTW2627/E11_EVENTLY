@@ -46,6 +46,9 @@ export class EventBoardComponent implements OnInit {
   eventos = signal<Evento[]>([]);
   isLoading = signal(true);
   errorMensaje = signal('');
+  eventosInscritos = signal<Record<string, boolean>>({});
+  procesandoEventoId = signal<string | null>(null);
+  feedbackMensaje = signal<{ tipo: 'exito' | 'error'; texto: string } | null>(null);
 
   filtros = {
     zona: '',
@@ -81,5 +84,51 @@ export class EventBoardComponent implements OnInit {
 
   aplicarFiltros(): void {
     this.cargarEventos();
+  }
+
+  inscribirse(eventoId: string): void {
+    this.procesandoEventoId.set(eventoId);
+    this.feedbackMensaje.set(null);
+
+    this.apiService.post<{ mensaje: string; evento: Evento }>(`events/${eventoId}/inscripcion`, {}).subscribe({
+      next: (res) => {
+        this.eventos.update((lista) =>
+          lista.map((ev) => (ev._id === eventoId ? res.evento : ev))
+        );
+        this.eventosInscritos.update((mapa) => ({ ...mapa, [eventoId]: true }));
+        this.feedbackMensaje.set({ tipo: 'exito', texto: res.mensaje || 'Inscripción realizada correctamente' });
+        this.procesandoEventoId.set(null);
+      },
+      error: (err) => {
+        const msg = err?.error?.mensaje || 'No se pudo completar la inscripción.';
+        // Si el backend avisa de que ya estaba inscrito, sincronizamos el botón
+        if (err?.status === 409 && msg.toLowerCase().includes('ya estás inscrito')) {
+          this.eventosInscritos.update((mapa) => ({ ...mapa, [eventoId]: true }));
+        }
+        this.feedbackMensaje.set({ tipo: 'error', texto: msg });
+        this.procesandoEventoId.set(null);
+      }
+    });
+  }
+
+  darseDeBaja(eventoId: string): void {
+    this.procesandoEventoId.set(eventoId);
+    this.feedbackMensaje.set(null);
+
+    this.apiService.delete<{ mensaje: string; evento: Evento }>(`events/${eventoId}/inscripcion`).subscribe({
+      next: (res) => {
+        this.eventos.update((lista) =>
+          lista.map((ev) => (ev._id === eventoId ? res.evento : ev))
+        );
+        this.eventosInscritos.update((mapa) => ({ ...mapa, [eventoId]: false }));
+        this.feedbackMensaje.set({ tipo: 'exito', texto: res.mensaje || 'Baja realizada correctamente' });
+        this.procesandoEventoId.set(null);
+      },
+      error: (err) => {
+        const msg = err?.error?.mensaje || 'No se pudo procesar la baja.';
+        this.feedbackMensaje.set({ tipo: 'error', texto: msg });
+        this.procesandoEventoId.set(null);
+      }
+    });
   }
 }

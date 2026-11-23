@@ -7,7 +7,11 @@ import { ApiService } from '../../core/services/api';
 describe('EventBoardComponent', () => {
   let component: EventBoardComponent;
   let fixture: ComponentFixture<EventBoardComponent>;
-  let apiServiceMock: { get: ReturnType<typeof vi.fn> };
+  let apiServiceMock: {
+    get: ReturnType<typeof vi.fn>;
+    post: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
+  };
 
   const mockRespuesta: RespuestaEventos = {
     eventos: [
@@ -43,7 +47,9 @@ describe('EventBoardComponent', () => {
 
   beforeEach(async () => {
     apiServiceMock = {
-      get: vi.fn().mockReturnValue(of(mockRespuesta))
+      get: vi.fn().mockReturnValue(of(mockRespuesta)),
+      post: vi.fn(),
+      delete: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -105,5 +111,36 @@ describe('EventBoardComponent', () => {
     expect(component.isLoading()).toBe(false);
     expect(fixture.nativeElement.textContent).toContain('Reintentar');
     consoleSpy.mockRestore();
+  });
+
+  it('debe llamar a POST events/:id/inscripcion y actualizar el evento al inscribirse', () => {
+    const eventoActualizado = {
+      ...mockRespuesta.eventos[0],
+      inscritos: [{ usuario: { _id: 'u1', nombre: 'Yoel' }, fechaInscripcion: '2026-11-23T20:00:00.000Z' }]
+    };
+    apiServiceMock.post.mockReturnValue(
+      of({ mensaje: 'Inscripción realizada correctamente', evento: eventoActualizado })
+    );
+
+    component.inscribirse('1');
+
+    expect(apiServiceMock.post).toHaveBeenCalledWith('events/1/inscripcion', {});
+    expect(component.eventos()[0].inscritos.length).toBe(1);
+    expect(component.eventosInscritos()['1']).toBe(true);
+    expect(component.feedbackMensaje()?.tipo).toBe('exito');
+  });
+
+  it('debe llamar a DELETE events/:id/inscripcion y actualizar el evento al darse de baja', () => {
+    const eventoActualizado = { ...mockRespuesta.eventos[0], inscritos: [] };
+    apiServiceMock.delete.mockReturnValue(
+      of({ mensaje: 'Baja realizada correctamente', evento: eventoActualizado })
+    );
+
+    component.darseDeBaja('1');
+
+    expect(apiServiceMock.delete).toHaveBeenCalledWith('events/1/inscripcion');
+    expect(component.eventos()[0].inscritos.length).toBe(0);
+    expect(component.eventosInscritos()['1']).toBe(false);
+    expect(component.feedbackMensaje()?.tipo).toBe('exito');
   });
 });
