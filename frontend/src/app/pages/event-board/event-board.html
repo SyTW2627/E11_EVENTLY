@@ -57,43 +57,46 @@
       </form>
     </div>
 
-    <!-- Contenedor del Grid (SCRUM-67 Integrada) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      
-      <!-- Evento 1: Con plazas -->
-      <app-event-card 
-        titulo="Pachanga de Jueves" 
-        deporte="Fútbol 7" 
-        fecha="20 de Noviembre, 19:30" 
-        lugar="Pabellón ULL"
-        nivel="Amateur" 
-        [inscritos]="10" 
-        [aforoMaximo]="14">
-      </app-event-card>
-
-      <!-- Evento 2: Lleno -->
-      <app-event-card 
-        titulo="Torneo rápido Padel" 
-        deporte="Pádel" 
-        fecha="22 de Noviembre, 10:00" 
-        lugar="Cancha Las Mantecas"
-        nivel="Avanzado" 
-        [inscritos]="4" 
-        [aforoMaximo]="4">
-      </app-event-card>
-
-      <!-- Evento 3: Pocos inscritos -->
-      <app-event-card 
-        titulo="Entreno Vóley Playa" 
-        deporte="Vóley Playa" 
-        fecha="25 de Noviembre, 16:00"
-        lugar="Charco Verde" 
-        nivel="Intermedio" 
-        [inscritos]="2" 
-        [aforoMaximo]="8">
-      </app-event-card>
-
-    </div>
+    <!-- Estado 1: Cargando -->
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center py-16 text-gray-500">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-green-700 mb-3"></div>
+        <p class="text-sm font-medium">Cargando eventos disponibles...</p>
+      </div>
+    } 
+    <!-- Estado 2: Error al conectar con la API -->
+    @else if (errorMensaje()) {
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-6 text-center">
+        <p class="font-medium">{{ errorMensaje() }}</p>
+        <button 
+          type="button" 
+          (click)="cargarEventos()" 
+          class="mt-3 px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
+          Reintentar
+        </button>
+      </div>
+    } 
+    <!-- Estado 3: Grid dinámico y Estado Vacío -->
+    @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (evento of eventos(); track evento._id) {
+          <app-event-card 
+            [titulo]="evento.titulo" 
+            [deporte]="evento.disciplina" 
+            [fecha]="(evento.fechaInicio | date:'dd/MM/yyyy, HH:mm') || ''" 
+            [lugar]="evento.ubicacion.instalacion + ' (' + evento.ubicacion.zona + ')'"
+            [nivel]="evento.nivel" 
+            [inscritos]="evento.inscritos.length" 
+            [aforoMaximo]="evento.aforoMax">
+          </app-event-card>
+        } @empty {
+          <div class="col-span-full bg-white rounded-xl border border-gray-100 p-12 text-center shadow-sm">
+            <p class="text-lg font-semibold text-gray-800">No hay eventos disponibles</p>
+            <p class="mt-1 text-sm text-gray-500">Prueba a cambiar los filtros o publica el primer partido.</p>
+          </div>
+        }
+      </div>
+    }
     
   </div>
 </div>

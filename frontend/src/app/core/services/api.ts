@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,11 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
   private http = inject(HttpClient);
-  // Gracias al proxy, solo necesitamos poner '/api' en lugar de toda la URL
   private baseUrl = '/api';
 
-  get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`);
+  get<T>(endpoint: string, params?: HttpParams | Record<string, string | number>): Observable<T> {
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params });
   }
 
   post<T>(endpoint: string, body: any): Observable<T> {
