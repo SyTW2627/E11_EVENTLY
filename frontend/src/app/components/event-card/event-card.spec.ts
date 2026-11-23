@@ -21,12 +21,24 @@ describe('EventCardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('debe calcular las plazas disponibles correctamente', () => {
+  it('debe calcular las plazas disponibles y el porcentaje de ocupación correctamente', () => {
     component.aforoMaximo = 10;
     component.inscritos = 3;
     fixture.detectChanges();
 
     expect(component.plazasDisponibles).toBe(7);
+    expect(component.porcentajeOcupacion).toBe(30);
+    expect(component.estaLleno).toBe(false);
+    expect(component.casiLleno).toBe(false);
+  });
+
+  it('debe marcar el evento como casi lleno cuando la ocupación es >= 75% y no está lleno', () => {
+    component.aforoMaximo = 8;
+    component.inscritos = 6;
+    fixture.detectChanges();
+
+    expect(component.porcentajeOcupacion).toBe(75);
+    expect(component.casiLleno).toBe(true);
     expect(component.estaLleno).toBe(false);
   });
 
@@ -36,6 +48,7 @@ describe('EventCardComponent', () => {
     fixture.detectChanges();
 
     expect(component.plazasDisponibles).toBe(0);
+    expect(component.porcentajeOcupacion).toBe(100);
     expect(component.estaLleno).toBe(true);
   });
 
@@ -46,6 +59,15 @@ describe('EventCardComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('¡Completo!');
+    expect(compiled.textContent).toContain('Sin plazas libres');
+  });
+
+  it('debe mostrar la insignia "Inscrito" cuando estaInscrito es true', () => {
+    component.estaInscrito = true;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Inscrito');
   });
 
   it('debe mostrar el botón "Apuntarme" y emitir apuntarse al hacer clic', () => {
