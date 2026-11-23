@@ -20,10 +20,19 @@ export class EventCardComponent {
   @Output() darseDeBaja = new EventEmitter<void>();
 
   get plazasDisponibles(): number {
-    return this.aforoMaximo - this.inscritos;
+    return Math.max(0, this.aforoMaximo - this.inscritos);
   }
 
   get estaLleno(): boolean {
     return this.inscritos >= this.aforoMaximo;
+  }
+
+  get porcentajeOcupacion(): number {
+    if (this.aforoMaximo <= 0) return 0;
+    return Math.min(100, Math.round((this.inscritos / this.aforoMaximo) * 100));
+  }
+
+  get casiLleno(): boolean {
+    return !this.estaLleno && this.porcentajeOcupacion >= 75;
   }
 }
