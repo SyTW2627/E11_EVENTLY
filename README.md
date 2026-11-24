@@ -68,6 +68,22 @@ Si la conexión es correcta, el log muestra:
 
 Si MongoDB no está disponible o las credenciales son incorrectas, el backend muestra el error y termina con código 1.
 
+## Integración continua (CI)
+
+El workflow `CI` (`.github/workflows/main.yml`) se ejecuta con GitHub Actions:
+
+- **Cuándo**: en cada Pull Request hacia `develop`, `main` o una rama `feature/**` (PR encadenados), en cada push a `develop` y `main`, y manualmente desde la pestaña Actions (botón *Run workflow*).
+- **Qué hace**: el job *Instalación y build* usa Node.js 24, instala las dependencias con `npm ci` en la raíz, en `backend/` y en `frontend/` (con caché de npm) y compila el frontend como prueba de humo.
+- **Seguridad**: el token del workflow solo tiene permiso de lectura y no se usan secretos. Si llega un commit nuevo a un PR, se cancela la ejecución anterior.
+
+Para ver los resultados, abre la pestaña **Checks** del Pull Request o la pestaña **Actions** del repositorio. También puedes usar la terminal:
+
+```bash
+gh run list --workflow CI      # últimas ejecuciones
+gh run watch                   # seguir una ejecución en curso
+gh run view --log-failed       # ver solo los pasos que han fallado
+```
+
 ## Convención de ramas y commits
 
 Seguimos Git Flow:
