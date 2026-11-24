@@ -59,3 +59,30 @@ jobs:
       - name: Build del frontend (prueba de humo)
         working-directory: frontend
         run: npm run build
+
+  tests-frontend:
+    name: Tests unitarios (frontend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias del frontend
+        working-directory: frontend
+        run: npm ci --no-audit --no-fund
+
+      # Vitest con jsdom (builder @angular/build:unit-test): no necesita navegador.
+      # El reporter github-actions añade el resumen al job y anota los fallos en el PR.
+      - name: Ejecutar tests unitarios
+        working-directory: frontend
+        run: npx ng test --watch=false --reporters=default --reporters=github-actions
