@@ -45,7 +45,7 @@ router.put('/:id', verificarToken, eventosController.editar);
 // DELETE: Cancelar un evento; no se borra, se marca como cancelado (SCRUM-49)
 router.delete('/:id', verificarToken, eventosController.cancelar);
 
-// POST: Inscribirse en un evento (SCRUM-85 y SCRUM-86)
+// POST: Inscribirse en un evento con control de aforo atómico (SCRUM-72)
 router.post('/:id/inscripcion', verificarToken, eventosController.inscribirse);
 
 // DELETE: Darse de baja de un evento (SCRUM-85 y SCRUM-86)
