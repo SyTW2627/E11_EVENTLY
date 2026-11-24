@@ -1,0 +1,61 @@
+# Integración continua del proyecto Evently (Grupo E11).
+# Cada job se ejecuta en un runner limpio de GitHub y no necesita secretos.
+name: CI
+
+on:
+  pull_request:
+    # feature/** permite que también se compruebe un PR encadenado contra otra rama de tarea
+    branches: [develop, main, 'feature/**']
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+# Mínimo privilegio: el token del workflow solo puede leer el repositorio
+permissions:
+  contents: read
+
+# Una sola ejecución por PR o rama; en los PR se cancela la anterior si llega un commit nuevo
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Coincide con engines.node del backend (>=24)
+  NODE_VERSION: '24'
+
+jobs:
+  build:
+    name: Instalación y build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      # El backend resuelve cors y jsonwebtoken desde el node_modules de la raíz
+      - name: Instalar dependencias de la raíz
+        run: npm ci --no-audit --no-fund
+
+      - name: Instalar dependencias del backend
+        working-directory: backend
+        run: npm ci --no-audit --no-fund
+
+      - name: Instalar dependencias del frontend
+        working-directory: frontend
+        run: npm ci --no-audit --no-fund
+
+      - name: Build del frontend (prueba de humo)
+        working-directory: frontend
+        run: npm run build
