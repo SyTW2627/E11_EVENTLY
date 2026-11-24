@@ -73,7 +73,10 @@ Si MongoDB no está disponible o las credenciales son incorrectas, el backend mu
 El workflow `CI` (`.github/workflows/main.yml`) se ejecuta con GitHub Actions:
 
 - **Cuándo**: en cada Pull Request hacia `develop`, `main` o una rama `feature/**` (PR encadenados), en cada push a `develop` y `main`, y manualmente desde la pestaña Actions (botón *Run workflow*).
-- **Qué hace**: el job *Instalación y build* usa Node.js 24, instala las dependencias con `npm ci` en la raíz, en `backend/` y en `frontend/` (con caché de npm) y compila el frontend como prueba de humo.
+- **Qué hace** (jobs que se ejecutan en paralelo, todos con Node.js 24 y caché de npm):
+  - *Instalación y build*: instala las dependencias con `npm ci` en la raíz, en `backend/` y en `frontend/`, y compila el frontend como prueba de humo.
+  - *Tests unitarios (frontend)*: ejecuta `ng test --watch=false` (Vitest con jsdom, sin navegador). El número de tests aparece en el resumen del job y los fallos se anotan en el PR. Para lanzarlos en local: `cd frontend && npx ng test --watch=false`.
+  - El backend todavía no tiene tests unitarios, por lo que no hay job para él.
 - **Seguridad**: el token del workflow solo tiene permiso de lectura y no se usan secretos. Si llega un commit nuevo a un PR, se cancela la ejecución anterior.
 
 Para ver los resultados, abre la pestaña **Checks** del Pull Request o la pestaña **Actions** del repositorio. También puedes usar la terminal:
