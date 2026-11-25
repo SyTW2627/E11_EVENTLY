@@ -32,10 +32,10 @@ async function cancelar(req, res) {
   res.status(200).json({ mensaje: 'Evento cancelado correctamente', evento });
 }
 
-// POST /api/events/:id/inscripcion (SCRUM-85 y SCRUM-86)
+// POST /api/events/:id/inscripcion (SCRUM-72). El usuario sale del token; el cuerpo se ignora.
 async function inscribirse(req, res) {
   const evento = await eventosService.inscribirseEvento(req.params.id, req.usuario);
-  res.status(200).json({ mensaje: 'Inscripción realizada correctamente', evento });
+  res.status(201).json({ mensaje: 'Inscripción realizada correctamente', evento });
 }
 
 // DELETE /api/events/:id/inscripcion (SCRUM-85 y SCRUM-86)

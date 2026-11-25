@@ -1,6 +1,14 @@
 {
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report"
+  },
   "dependencies": {
     "cors": "^2.8.6",
     "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
   }
 }
