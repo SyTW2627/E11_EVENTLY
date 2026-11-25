@@ -253,36 +253,49 @@ async function cancelarEvento(id, datosToken) {
   return formatearEvento(evento, usuario._id);
 }
 
-// SCRUM-85 y SCRUM-86: inscripción de un usuario a un evento con validaciones de negocio (aforo y duplicados).
+// SCRUM-72: inscripción de un usuario a un evento con control de aforo atómico.
+// Todas las condiciones (evento activo, no terminado, usuario no inscrito y plazas libres)
+// se comprueban en el filtro de una única operación findOneAndUpdate, de modo que dos
+// peticiones simultáneas nunca pueden superar aforoMax ni inscribir dos veces al mismo usuario.
 async function inscribirseEvento(id, datosToken) {
   const usuario = await obtenerUsuarioAutenticado(datosToken);
-  const evento = await buscarEvento(id);
+  if (typeof id !== 'string' || !/^[0-9a-fA-F]{24}$/.test(id)) {
+    throw new ErrorApi(400, 'El id del evento no tiene un formato válido');
+  }
 
-  // SCRUM-86: validaciones de estado y fechas
-  if (evento.estado === 'cancelado') {
+  const ahora = new Date();
+  const evento = await Evento.findOneAndUpdate(
+    {
+      _id: id,
+      estado: 'activo',
+      fechaFin: { $gt: ahora },
+      'inscritos.usuario': { $ne: usuario._id },
+      $expr: { $lt: [{ $size: '$inscritos' }, '$aforoMax'] },
+    },
+    { $push: { inscritos: { usuario: usuario._id, fechaInscripcion: ahora } } },
+    { returnDocument: 'after' }
+  );
+
+  if (evento) {
+    return formatearEvento(evento, usuario._id);
+  }
+
+  // No se ha inscrito: se vuelve a leer el evento solo para saber qué error responder.
+  const actual = await buscarEvento(id);
+  if (actual.estado === 'cancelado') {
     throw new ErrorApi(409, 'No te puedes inscribir en un evento cancelado');
   }
-  if (evento.fechaFin.getTime() <= Date.now()) {
+  if (actual.fechaFin.getTime() <= ahora.getTime()) {
     throw new ErrorApi(409, 'No te puedes inscribir en un evento que ya ha terminado');
   }
-
-  // SCRUM-86: validación de duplicados
-  const yaInscrito = evento.inscritos.some((inscrito) =>
-    esMismoUsuario(inscrito.usuario, usuario._id)
-  );
-  if (yaInscrito) {
+  if (actual.inscritos.some((inscrito) => esMismoUsuario(inscrito.usuario, usuario._id))) {
     throw new ErrorApi(409, 'Ya estás inscrito en este evento');
   }
-
-  // SCRUM-86: validación de aforo máximo
-  if (evento.inscritos.length >= evento.aforoMax) {
-    throw new ErrorApi(409, 'El evento ha alcanzado su aforo máximo');
+  if (actual.inscritos.length >= actual.aforoMax) {
+    throw new ErrorApi(409, 'El evento está completo: no quedan plazas libres');
   }
-
-  evento.inscritos.push({ usuario: usuario._id });
-  await evento.save({ validateModifiedOnly: true });
-
-  return formatearEvento(evento, usuario._id);
+  // El evento cambió entre la actualización y la lectura (por ejemplo, alguien se dio de baja).
+  throw new ErrorApi(409, 'No se ha podido completar la inscripción; inténtalo de nuevo');
 }
 
 // SCRUM-85 y SCRUM-86: baja de un usuario de un evento.
