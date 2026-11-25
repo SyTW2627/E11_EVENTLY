@@ -68,37 +68,21 @@ Si la conexión es correcta, el log muestra:
 
 Si MongoDB no está disponible o las credenciales son incorrectas, el backend muestra el error y termina con código 1.
 
-## Tests End-to-End (Playwright)
+## Integración continua (CI)
 
-Los tests E2E están en `e2e/` y la configuración en `playwright.config.ts`. Prueban la interfaz
-(registro, login y tablón) y la API de eventos e inscripción.
+El workflow `CI` (`.github/workflows/main.yml`) se ejecuta con GitHub Actions:
 
-Requisitos: dependencias instaladas en la raíz, en `backend/` y en `frontend/` (`npm install` en
-cada carpeta), el `.env` de la raíz y MongoDB levantado con `docker compose up -d`. Si MongoDB no
-responde, la suite falla al empezar con un mensaje que lo indica.
+- **Cuándo**: en cada Pull Request hacia `develop`, `main` o una rama `feature/**` (PR encadenados), en cada push a `develop` y `main`, y manualmente desde la pestaña Actions (botón *Run workflow*).
+- **Qué hace**: el job *Instalación y build* usa Node.js 24, instala las dependencias con `npm ci` en la raíz, en `backend/` y en `frontend/` (con caché de npm) y compila el frontend como prueba de humo.
+- **Seguridad**: el token del workflow solo tiene permiso de lectura y no se usan secretos. Si llega un commit nuevo a un PR, se cancela la ejecución anterior.
 
-Instalación del navegador (solo Chromium, una vez por máquina):
-
-```bash
-npx playwright install chromium
-```
-
-Ejecución, desde la raíz del repositorio:
+Para ver los resultados, abre la pestaña **Checks** del Pull Request o la pestaña **Actions** del repositorio. También puedes usar la terminal:
 
 ```bash
-npm run test:e2e          # toda la suite en consola
-npm run test:e2e:ui       # modo interactivo de Playwright
-npm run test:e2e:report   # abre el último informe HTML (playwright-report/)
+gh run list --workflow CI      # últimas ejecuciones
+gh run watch                   # seguir una ejecución en curso
+gh run view --log-failed       # ver solo los pasos que han fallado
 ```
-
-Playwright arranca el backend (puerto 3000) y el frontend (puerto 4200). Si ya están en marcha,
-los reutiliza. Las trazas y capturas solo se guardan cuando un test falla (`test-results/`).
-
-Datos de prueba: los tests usan la misma base de datos que el desarrollo, así que todo lo que crean
-va marcado. Los usuarios tienen el email `e2e-<idEjecución>-<aleatorio>@example.test` y una
-contraseña aleatoria, y los eventos llevan el prefijo `[E2E]` en el título. Al terminar, el
-`globalTeardown` borra solo los documentos con esas marcas. Para comprobar que no queda ninguno:
-`node e2e/utils/bd.js contar`.
 
 ## Convención de ramas y commits
 
