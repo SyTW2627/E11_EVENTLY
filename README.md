@@ -68,6 +68,38 @@ Si la conexión es correcta, el log muestra:
 
 Si MongoDB no está disponible o las credenciales son incorrectas, el backend muestra el error y termina con código 1.
 
+## Tests End-to-End (Playwright)
+
+Los tests E2E están en `e2e/` y la configuración en `playwright.config.ts`. Prueban la interfaz
+(registro, login y tablón) y la API de eventos e inscripción.
+
+Requisitos: dependencias instaladas en la raíz, en `backend/` y en `frontend/` (`npm install` en
+cada carpeta), el `.env` de la raíz y MongoDB levantado con `docker compose up -d`. Si MongoDB no
+responde, la suite falla al empezar con un mensaje que lo indica.
+
+Instalación del navegador (solo Chromium, una vez por máquina):
+
+```bash
+npx playwright install chromium
+```
+
+Ejecución, desde la raíz del repositorio:
+
+```bash
+npm run test:e2e          # toda la suite en consola
+npm run test:e2e:ui       # modo interactivo de Playwright
+npm run test:e2e:report   # abre el último informe HTML (playwright-report/)
+```
+
+Playwright arranca el backend (puerto 3000) y el frontend (puerto 4200). Si ya están en marcha,
+los reutiliza. Las trazas y capturas solo se guardan cuando un test falla (`test-results/`).
+
+Datos de prueba: los tests usan la misma base de datos que el desarrollo, así que todo lo que crean
+va marcado. Los usuarios tienen el email `e2e-<idEjecución>-<aleatorio>@example.test` y una
+contraseña aleatoria, y los eventos llevan el prefijo `[E2E]` en el título. Al terminar, el
+`globalTeardown` borra solo los documentos con esas marcas. Para comprobar que no queda ninguno:
+`node e2e/utils/bd.js contar`.
+
 ## Convención de ramas y commits
 
 Seguimos Git Flow:
